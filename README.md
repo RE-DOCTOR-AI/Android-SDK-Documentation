@@ -32,7 +32,7 @@ Here is an example on how to use it. Please remember that you need to work with 
 <uses-permission android:name="android.permission.WAKE_LOCK" />  
 ```
 
-2. Add the following functions and call them before you start working with camera so that you don't need to manually 
+2. Add the following functions and call them before you start working with camera so that you don't need to manually set up camera premissions for your app
 ```kotlin 
 private boolean checkPermission() {
     return ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED;
