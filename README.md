@@ -32,7 +32,7 @@ Here is an example on how to use it. Please remember that you need to work with 
 <uses-permission android:name="android.permission.WAKE_LOCK" />  
 ```
 
-2. Add the following functions and call them before you start working with camera so that you don't need to manually set up camera premissions for your app
+2. Add the following functions and call them before you start working with camera so that you don't need to manually set up camera permissions for your app
 ```kotlin 
 private boolean checkPermission() {
     return ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED;
@@ -301,7 +301,7 @@ class MainActivity : AppCompatActivity() {
 
 ```
 #### Get results
-On the class above you can see the status ```kotlinProcessStatus.PROCESS_FINISHED```. So once this status is reached you can get values from the librarys
+On the class above you can see the status ```kotlinProcessStatus.PROCESS_FINISHED```. So once this status is reached you can get values from the library
 ```kotlin
 ProcessStatus.PROCESS_FINISHED -> {
     val i = Intent(this@MainActivity, VitalSignsResults::class.java)

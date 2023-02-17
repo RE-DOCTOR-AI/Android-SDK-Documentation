@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">SDK</string>
+    <string name="HR">Heart Rate</string>
+    <string name="BP">Blood Pressure</string>
+    <string name="SPo2">Blood Oxygen</string>
+    <string name="RR">Respiration Rate</string>
+    <string name="Logo">RE.DOCTOR Logo</string>
+</resources>
