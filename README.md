@@ -20,9 +20,10 @@ dependencies {
 <img width="592" alt="image" src="https://user-images.githubusercontent.com/125552714/219388792-0fbb9d8b-7936-43c5-be92-a5fbabcca220.png">
 
 ### Using
+You can downlad this repo and request for a demo SDK file so that you can check how the integration is working.
 #### Prepare data and call SDK functions
 Here is an example on how to use it. Please remember that you need to work with Android camera and create a special class/classes where you can prepare data for SDK and receive results from it.
-1. Add these configuration to access camera to your AndroidManifest file in resource folder
+1. Add these configuration to access camera to your AndroidManifest file in resource folder. You can find it here https://github.com/RE-DOCTOR-AI/Android-SDK-Documentation/blob/main/app/src/main/AndroidManifest.xml
 ```XML 
 <uses-permission android:name="android.permission.CAMERA" />
 <uses-feature android:name="android.hardware.camera" />
@@ -32,7 +33,7 @@ Here is an example on how to use it. Please remember that you need to work with 
 <uses-permission android:name="android.permission.WAKE_LOCK" />  
 ```
 
-2. Add the following functions and call them before you start working with camera so that you don't need to manually set up camera permissions for your app
+2. Add the following functions and call them before you start working with camera so that you don't need to manually set up camera permissions for your app. You can see how it's done here https://github.com/RE-DOCTOR-AI/Android-SDK-Documentation/blob/main/app/src/main/java/tvs/sdk/AboutApp.kt#L33
 ```kotlin 
 private boolean checkPermission() {
     return ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED;
@@ -43,7 +44,7 @@ private void requestPermission() {
 }      
 ```
 
-3. In your codebase with android components you should implement class extends AppCompatActivity which opens camera and process images in onPreviewFrame method.
+3. In your codebase with android components you should implement class extends AppCompatActivity which opens camera and process images in onPreviewFrame method. The complete code can be found here https://github.com/RE-DOCTOR-AI/Android-SDK-Documentation/blob/main/app/src/main/java/tvs/sdk/MainActivity.kt
 ```kotlin 
 package tvs.sdk
 
