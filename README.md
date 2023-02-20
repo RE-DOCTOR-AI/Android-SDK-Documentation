@@ -142,170 +142,11 @@ class MainActivity : AppCompatActivity() {
 }
 ```
 
-5. Here is the code of the whole class
-```kotlin
-package tvs.sdk
+5. You can find the full class implementation here https://github.com/RE-DOCTOR-AI/Android-SDK-Documentation/blob/main/app/src/main/java/tvs/sdk/MainActivity.kt
 
-//imports block goes here
-
-
-class MainActivity : AppCompatActivity() {
-    private var preview: SurfaceView? = null
-    private lateinit var vsp: VitalSignsProcessor
-    private var patientAge : String = ""
-    private var patientHeight : String = ""
-    private var patientWeight : String = ""
-    private var patientGender : String = ""
-
-    //Toast
-    private var mainToast: Toast? = null
-
-    //ProgressBar
-    private var progBar: ProgressBar? = null
-    var progP = 0
-    var inc = 0
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_vital_signs_process)
-        vsp = VitalSignsProcessor(
-            User(
-
-                height = 180.0,
-                weight = 73.0,
-                age = 38,
-                gen = 1
-
-            )
-        )
-
-        preview = findViewById(R.id.preview)
-        previewHolder = preview!!.holder
-        previewHolder!!.addCallback(surfaceCallback)
-        previewHolder!!.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS)
-        progBar = findViewById(R.id.VSPB)
-        progBar!!.progress = 0
-
-        // WakeLock Initialization : Forces the phone to stay On
-        val pm: PowerManager = getSystemService(Context.POWER_SERVICE) as PowerManager
-        wakeLock = pm.newWakeLock(PowerManager.FULL_WAKE_LOCK, "tvs:DoNotDimScreen")
-
-    }
-    private val previewCallback: Camera.PreviewCallback = object : Camera.PreviewCallback {
-        /**
-         * {@inheritDoc}
-         */
-        override fun onPreviewFrame(data: ByteArray, cam: Camera) {
-            val size = cam.parameters.previewSize ?: throw NullPointerException()
-
-            val width = size.width
-            val height = size.height
-
-            when (vsp.processImage(data, width, height)) {
-                ProcessStatus.RED_INTENSITY_NOT_ENOUGH -> {
-                    inc = 0
-                    progP = inc
-                    progBar!!.progress = progP
-                }
-                ProcessStatus.MEASUREMENT_FAILED -> {
-                    inc = 0
-                    progP = inc
-                    progBar!!.progress = progP
-                    mainToast =
-                        Toast.makeText(applicationContext, "Measurement Failed", Toast.LENGTH_SHORT)
-                    mainToast!!.show()
-                }
-                ProcessStatus.IN_PROGRESS -> {
-                    progP = inc++ / VITALS_PROCESS_DURATION
-                    progBar!!.progress = progP
-                }
-                ProcessStatus.PROCESS_FINISHED -> {
-                    val i = Intent(this@MainActivity, VitalSignsResults::class.java)
-                    i.putExtra("O2R", vsp.o2.value)
-                    i.putExtra("breath", vsp.Breath.value)
-                    i.putExtra("bpm", vsp.Beats.value)
-                    i.putExtra("SP", vsp.SP.value)
-                    i.putExtra("DP", vsp.DP.value)
-                    startActivity(i)
-                    finish()
-                }
-                ProcessStatus.NEED_MORE_IMAGES -> {
-                    //need to process more images
-                }
-            }
-        }
-    }
-
-    override fun onResume() {
-        super.onResume()
-        wakeLock!!.acquire()
-        camera = Camera.open()
-        camera!!.setDisplayOrientation(90)
-    }
-
-
-    override fun onPause() {
-        super.onPause()
-        wakeLock!!.release()
-        camera!!.setPreviewCallback(null)
-        camera!!.stopPreview()
-        camera!!.release()
-        camera = null
-    }
-    private val surfaceCallback: SurfaceHolder.Callback = object : SurfaceHolder.Callback {
-        override fun surfaceCreated(holder: SurfaceHolder) {
-            try {
-                camera!!.setPreviewDisplay(previewHolder)
-                camera!!.setPreviewCallback(previewCallback)
-            } catch (t: Throwable) {
-            }
-        }
-
-        override fun surfaceChanged(holder: SurfaceHolder, format: Int, width: Int, height: Int) {
-            val parameters = camera!!.parameters
-            parameters.flashMode = Camera.Parameters.FLASH_MODE_TORCH
-            val size = getSmallestPreviewSize(width, height, parameters)
-            if (size != null) {
-                parameters.setPreviewSize(size.width, size.height)
-            }
-            camera!!.parameters = parameters
-            camera!!.startPreview()
-        }
-
-        override fun surfaceDestroyed(holder: SurfaceHolder) {}
-    }
-
-    companion object {
-        //Variables Initialization
-        private var previewHolder: SurfaceHolder? = null
-        private var camera: Camera? = null
-        private var wakeLock: PowerManager.WakeLock? = null
-
-        private fun getSmallestPreviewSize(
-            width: Int,
-            height: Int,
-            parameters: Camera.Parameters
-        ): Camera.Size? {
-            var result: Camera.Size? = null
-            for (size in parameters.supportedPreviewSizes) {
-                if (size.width <= width && size.height <= height) {
-                    if (result == null) {
-                        result = size
-                    } else {
-                        val resultArea = result.width * result.height
-                        val newArea = size.width * size.height
-                        if (newArea < resultArea) result = size
-                    }
-                }
-            }
-            return result
-        }
-    }
-}
-
-```
 #### Get results
-On the class above you can see the status ```kotlinProcessStatus.PROCESS_FINISHED```. So once this status is reached you can get values from the library
+On the class above you can see the status ```kotlinProcessStatus.PROCESS_FINISHED```. So once this status is reached you can get values from the library.
+You can see it here https://github.com/RE-DOCTOR-AI/Android-SDK-Documentation/blob/main/app/src/main/java/tvs/sdk/MainActivity.kt#L107
 ```kotlin
 ProcessStatus.PROCESS_FINISHED -> {
     val i = Intent(this@MainActivity, VitalSignsResults::class.java)
@@ -326,7 +167,8 @@ Library needs some patient data in a metric system so use kilograms(kg) and cent
 3. Age (years)
 4. Gender (1 - Male, 2 - Female). We are sorry to ask you to chose only between those two numbers but calculations are depend on them.
 
-You can see it here (line 38-47 in the “main  class MainActivity : AppCompatActivity()” code snippet above). In case you have imperial measurement system in your apps you can convert that data to metric as we’re doing in our sample apps.
+You can see it here https://github.com/RE-DOCTOR-AI/Android-SDK-Documentation/blob/main/app/src/main/java/tvs/sdk/MainActivity.kt#L35
+In case you have imperial measurement system in your apps you can convert that data to metric as we’re doing in our sample apps.
 ```kotlin
 vsp = VitalSignsProcessor(
             User(
