@@ -194,7 +194,7 @@ Current version is 1.0.1 has a basic functionality to measure vitals including:
 3. Heart Rate
 4. Blood Pressure
 
-##Screenshots
+## Screenshots
 <p float="left">
 <img src="https://user-images.githubusercontent.com/125552714/220103087-e00c5662-e045-4707-9d5e-5d4c31811db5.png" width=15% height=15%>
 <img src="https://user-images.githubusercontent.com/125552714/220103182-2e9f5f2b-06f7-490a-b469-d9b927574c54.png" width=15% height=15%>
