@@ -10,11 +10,12 @@ import android.view.SurfaceView
 import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import model.User
-import utils.ProcessStatus
-import utils.VITALS_PROCESS_DURATION
-import vitals.VitalSignsProcessor
 
+import com.tvs.model.User
+import com.tvs.utils.ProcessStatus
+import com.tvs.vitals.VitalSignsProcessor
+
+const val VITALS_PROCESS_DURATION = 35
 
 class MainActivity : AppCompatActivity() {
     private var preview: SurfaceView? = null
