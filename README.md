@@ -6,18 +6,17 @@ SDK requires at least 30 seconds of camera and flash to be on to capture video w
 
 ## Tutorials
 ### Installing
-1. To install the SDK move the com.tvs.shared-1.0.1.jar file into a lib folder in your project directory: ```<Android app root folder>/libs/```
-<img width="373" alt="image" src="https://user-images.githubusercontent.com/125552714/219388288-c1b04fba-29e9-4086-8e7e-ee638547cd8c.png">
-
+1. To install the SDK move the VitalsSDK.aar file into a lib folder in your project directory: ```<Android app root folder>/libs/```
+<img width="354" alt="image" src="https://user-images.githubusercontent.com/125552714/230612751-339f8bf3-f24a-4e75-9538-d1ff6585b8a3.png">
 2. Add it as a local dependency into your build.gradle file for your Android app
  
 ```gradle 
 dependencies {
     
-    api files('libs/tvs.shared-1.0.1.jar')
+    implementation fileTree(dir: 'libs', include: ['*.jar', '*.aar'])
 }  
 ```
-<img width="592" alt="image" src="https://user-images.githubusercontent.com/125552714/219388792-0fbb9d8b-7936-43c5-be92-a5fbabcca220.png">
+<img width="670" alt="image" src="https://user-images.githubusercontent.com/125552714/230612913-ddd48a12-26d7-4d4a-a233-2e4942b8ed55.png">
 
 ### Using
 You can downlad this repo and request for a demo SDK file so that you can check how the integration is working.
@@ -54,17 +53,19 @@ package tvs.sdk
 import android.content.Context
 import android.content.Intent
 import android.hardware.Camera
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.PowerManager
 import android.view.SurfaceHolder
 import android.view.SurfaceView
 import android.widget.ProgressBar
 import android.widget.Toast
-import model.User
-import utils.ProcessStatus
-import utils.VITALS_PROCESS_DURATION
-import vitals.VitalSignsProcessor
+import androidx.appcompat.app.AppCompatActivity
+
+import com.tvs.model.User
+import com.tvs.utils.ProcessStatus
+import com.tvs.vitals.VitalSignsProcessor
+
+const val VITALS_PROCESS_DURATION = 35
 
 
 class MainActivity : AppCompatActivity() {
