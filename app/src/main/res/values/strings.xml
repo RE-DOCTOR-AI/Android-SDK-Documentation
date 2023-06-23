@@ -5,4 +5,5 @@
     <string name="SPo2">Blood Oxygen</string>
     <string name="RR">Respiration Rate</string>
     <string name="Logo">RE.DOCTOR Logo</string>
+    <string name="calculating_results_prompt">Calculating results, please wait…</string>
 </resources>

@@ -37,6 +37,13 @@
             </intent-filter>
         </activity>
         <activity
+            android:name=".CalculatingResults"
+            android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
             android:name=".VitalSignsResults"
             android:configChanges="orientation"
             android:screenOrientation="fullSensor" />
