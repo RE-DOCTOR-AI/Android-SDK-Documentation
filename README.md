@@ -93,12 +93,12 @@ class MainActivity : AppCompatActivity() {
 }     
 ```
 
-4. There are few nethods must be called in order to prepare & collect data and process it. See it here: https://github.com/RE-DOCTOR-AI/Android-SDK-Documentation/blob/SDK-V2/app/src/main/java/tvs/sdk/MainActivity.kt#L38C9-L39C62
+4. There are few nethods must be called in order to prepare & collect data and process it. See it here: https://github.com/RE-DOCTOR-AI/Android-SDK-Documentation/blob/SDK-V2/app/src/main/java/tvs/sdk/MainActivity.kt#L34
 ```kotlin
 vitalsFrameConsumer = ImageFrameConsumerAndroid(900)
 glucoseFrameConsumer = ImageFrameConsumerAndroid(600)
 ```
-5. You need to create ```previewCallback``` method to start the data preparation, collectoin and processing. See it here: https://github.com/RE-DOCTOR-AI/Android-SDK-Documentation/blob/SDK-V2/app/src/main/java/tvs/sdk/MainActivity.kt#L73C1-L73C1
+5. You need to create ```previewCallback``` method to start the data preparation, collectoin and processing. See it here: https://github.com/RE-DOCTOR-AI/Android-SDK-Documentation/blob/SDK-V2/app/src/main/java/tvs/sdk/MainActivity.kt#L53C3-L53C3
 ```kotlin
        private val previewCallback: Camera.PreviewCallback = object : Camera.PreviewCallback {
 
@@ -188,11 +188,11 @@ glucoseFrameConsumer = ImageFrameConsumerAndroid(600)
     }
 ```
 7. There are differrent statuses and you can show to the user differrent messages during the measurement process
-8. Once yse get the ```ProcessStatus.START_CALCULATING``` you can show a loader to the user so that they awar that it requires some time to get the results. See it here: https://github.com/RE-DOCTOR-AI/Android-SDK-Documentation/blob/SDK-V2/app/src/main/java/tvs/sdk/MainActivity.kt#L152
+8. Once yse get the ```ProcessStatus.START_CALCULATING``` you can show a loader to the user so that they aware that it requires some time to get the results. See it here: https://github.com/RE-DOCTOR-AI/Android-SDK-Documentation/blob/SDK-V2/app/src/main/java/tvs/sdk/MainActivity.kt#L132
 9. We keep calculation process in a separate class here https://github.com/RE-DOCTOR-AI/Android-SDK-Documentation/blob/SDK-V2/app/src/main/java/tvs/sdk/CalculatingResults.kt
 
 #### Get results
-Once you've got the status ```ProcessingStatus.FINISHED```, you can get the results of calculations. See ot here: https://github.com/RE-DOCTOR-AI/Android-SDK-Documentation/blob/SDK-V2/app/src/main/java/tvs/sdk/CalculatingResults.kt#L37C80-L37C105
+Once you've got the status ```ProcessingStatus.FINISHED```, you can get the results of calculations. See ot here: https://github.com/RE-DOCTOR-AI/Android-SDK-Documentation/blob/SDK-V2/app/src/main/java/tvs/sdk/CalculatingResults.kt#L44
 ```kotlin
      if (glucoseResult === ProcessingStatus.FINISHED && vitalsResult == ProcessingStatus.FINISHED) {
          val i = Intent(this@CalculatingResults, VitalSignsResults::class.java)
@@ -215,7 +215,7 @@ Library needs some patient data in a metric system so use kilograms(kg) and cent
 3. Age (years)
 4. Gender (1 - Male, 2 - Female). We are sorry to ask you to chose only between those two numbers but calculations are depend on them.
 
-You can see it here https://github.com/RE-DOCTOR-AI/Android-SDK-Documentation/blob/SDK-V2/app/src/main/java/tvs/sdk/MainActivity.kt#L83
+You can see it here https://github.com/RE-DOCTOR-AI/Android-SDK-Documentation/blob/SDK-V2/app/src/main/java/tvs/sdk/MainActivity.kt#L63
 ```kotlin
    i.putExtra("userParams", UserParameters(
        height = 180.0,
@@ -224,7 +224,7 @@ You can see it here https://github.com/RE-DOCTOR-AI/Android-SDK-Documentation/bl
        gen = 1
    ))
 ```
-and then they are used here for calculating results: https://github.com/RE-DOCTOR-AI/Android-SDK-Documentation/blob/SDK-V2/app/src/main/java/tvs/sdk/CalculatingResults.kt#L28
+and then they are used here for calculating results: https://github.com/RE-DOCTOR-AI/Android-SDK-Documentation/blob/SDK-V2/app/src/main/java/tvs/sdk/CalculatingResults.kt#L33
 ```kotlin
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
