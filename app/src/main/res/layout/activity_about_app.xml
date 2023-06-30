@@ -15,7 +15,6 @@
     android:paddingEnd="20dp"
     android:paddingBottom="20dp"
     android:paddingTop="20dp"
-    android:background="@mipmap/bg4"
     android:orientation="vertical"
     tools:context="com.tvs.android.AboutApp">
 

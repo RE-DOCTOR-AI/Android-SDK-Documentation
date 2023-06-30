@@ -1,6 +1,5 @@
 package tvs.sdk
 
-import android.Manifest
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
@@ -18,6 +17,9 @@ class VitalSignsResults : AppCompatActivity() {
     var glucoseMax = 0
     var glucoseMin = 0
 
+    /*
+     * Here we just show results to end user
+     */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_vital_signs_results)

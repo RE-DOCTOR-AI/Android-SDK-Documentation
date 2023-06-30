@@ -20,20 +20,27 @@ class CalculatingResults : AppCompatActivity() {
         return true
     }
 
+    /*
+     * Here we wait for calculations to finish and then redirect user to a screen with results.
+     * It's done on a separate thread in order not to block the UI
+     */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_calculating_results)
 
+        //Here we create processor classes which return status "FINISHED" once calculation is dome
         val glucoseLevelProcessor = GlucoseLevelProcessorAndroid()
         val vitalsProcessor = VitalSignsProcessorNg(this.getUserParameters())
 
-        // Run in thread to avoid blocking UI
+        // Run it in thread to avoid blocking UI
         Thread {
+            //Pass collected data to Vitals and Glucose processors
             val glucoseFrameData = this.getGlucoseFrameData()
             val vitalsFrameData = this.getVitalsFrameData()
             val vitalsResult = vitalsProcessor.process(vitalsFrameData)
             val glucoseResult = glucoseLevelProcessor.process(glucoseFrameData)
 
+            //check for status and get results from the SDK
             if (glucoseResult === ProcessingStatus.FINISHED && vitalsResult == ProcessingStatus.FINISHED) {
                 val i = Intent(this@CalculatingResults, VitalSignsResults::class.java)
                 i.putExtra("glucoseMin", glucoseLevelProcessor.getGlucoseMinValue())
@@ -53,6 +60,9 @@ class CalculatingResults : AppCompatActivity() {
         }.start()
     }
 
+    /*
+     * Check for user parameters which where entered earlier
+     */
     private fun getUserParameters(): User {
         val bundle = intent.extras ?: throw IllegalArgumentException("No bundle")
 
@@ -64,6 +74,9 @@ class CalculatingResults : AppCompatActivity() {
             ?: throw IllegalArgumentException("No userParams in bundle")
     }
 
+    /*
+     * Function to get Glucose frame fata
+     */
     private fun getGlucoseFrameData(): FramesDataAndroid {
         val bundle = intent.extras ?: throw IllegalArgumentException("No bundle")
 
@@ -75,6 +88,9 @@ class CalculatingResults : AppCompatActivity() {
             ?: throw IllegalArgumentException("No glucoseData in bundle")
     }
 
+    /*
+     * Function to get Vitals frame fata
+     */
     private fun getVitalsFrameData(): FramesDataAndroid {
         val bundle = intent.extras ?: throw IllegalArgumentException("No bundle")
 

@@ -1,6 +1,5 @@
 package tvs.sdk
 
-import android.content.Context
 import android.content.Intent
 import android.hardware.Camera
 import android.os.Bundle
@@ -13,13 +12,11 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.tvs.model.UserParameters
 import com.tvs.utils.ProcessStatus
-//import com.tvs.vitals.VitalSignsProcessorNg
 import com.tvs.model.ImageFrameConsumerAndroid
 import com.tvs.utils.VITALS_PROCESS_DURATION
 
 class MainActivity : AppCompatActivity() {
     private var preview: SurfaceView? = null
-    //private lateinit var vsp: VitalSignsProcessorNg
     private lateinit var vitalsFrameConsumer: ImageFrameConsumerAndroid
     private lateinit var glucoseFrameConsumer: ImageFrameConsumerAndroid
 
@@ -34,26 +31,9 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_vital_signs_process)
-        //Here we create the SDK processor and pass there a User data
+        //SDK: Here we create the SDK frame consumers
         vitalsFrameConsumer = ImageFrameConsumerAndroid(900)
         glucoseFrameConsumer = ImageFrameConsumerAndroid(600)
-        /*
-        patientAge = "38"
-        patientHeight = "180"
-        patientWeight = "72"
-        patientGender = "1"
-
-         */
-        /*
-        vsp = VitalSignsProcessor(
-            User(
-                height = 180.0,
-                weight = 73.0,
-                age = 38,
-                gen = 1
-            )
-        )
-         */
 
         // XML - Java Connecting
         preview = findViewById(R.id.preview)
@@ -72,8 +52,8 @@ class MainActivity : AppCompatActivity() {
 
     private val previewCallback: Camera.PreviewCallback = object : Camera.PreviewCallback {
 
-
         private fun onStartProcessing() {
+            //SDK: Here we create consumers of data
             val vitalsFrames = vitalsFrameConsumer.framesData()
             val glucoseFrames = glucoseFrameConsumer.framesData()
 
@@ -90,6 +70,8 @@ class MainActivity : AppCompatActivity() {
             finish()
         }
 
+        //Set of functions below whic got called on different statuses of the SDK
+        //-->
         private fun onConsumptionFailure() {
             val debugStatus: TextView = findViewById(R.id.DebugStatus)
             debugStatus.text = "Process status: Let's try one more time!"
@@ -115,6 +97,7 @@ class MainActivity : AppCompatActivity() {
             val debugStatus: TextView = findViewById(R.id.DebugStatus)
             debugStatus.text = "Process status: Nearly there!"
         }
+        //<--
 
 
         /*
@@ -155,65 +138,6 @@ class MainActivity : AppCompatActivity() {
             ) {
                 onMoreImages()
             }
-
-        /*
-
-            when (vsp.processImage(data, width, height)) {
-                /*
-                 * The intensity of the RED received from the camera is crucial for the SDK.
-                 * SDK checks each frame and returns this status ion case red color is at low level
-                 */
-                ProcessStatus.RED_INTENSITY_NOT_ENOUGH -> {
-                    inc = 0
-                    progP = inc
-                    progBar!!.progress = progP
-                }
-
-                /*
-                 * This status means something went wrong. We plan to add more details for that status in next versions.
-                 * For now you can just ask user to restart the process.
-                 */
-                ProcessStatus.MEASUREMENT_FAILED -> {
-                    inc = 0
-                    progP = inc
-                    progBar!!.progress = progP
-                    mainToast =
-                        Toast.makeText(applicationContext, "Measurement Failed", Toast.LENGTH_SHORT)
-                    mainToast!!.show()
-                }
-
-                /*
-                 * This status means everything goes OK and SDK processing data
-                 */
-                ProcessStatus.IN_PROGRESS -> {
-                    //Did some simple corrections here  with 1.15 magic number so that you wait till the progress bar reaches the end.
-                    progP = (inc++ / (VITALS_PROCESS_DURATION*1.15)).toInt()
-                    progBar!!.progress = progP
-                }
-
-                /*
-                 * This status means everything goes OK and SDK processing data
-                 */
-                ProcessStatus.PROCESS_FINISHED -> {
-                    val i = Intent(this@MainActivity, VitalSignsResults::class.java)
-                    i.putExtra("O2R", vsp.o2.value)
-                    i.putExtra("breath", vsp.Breath.value)
-                    i.putExtra("bpm", vsp.Beats.value)
-                    i.putExtra("SP", vsp.SP.value)
-                    i.putExtra("DP", vsp.DP.value)
-                    startActivity(i)
-                    finish()
-                }
-
-                /*
-                 * If you get this status it's better to restart the whole process from the beginning.
-                 * This means that we didn't have enough frames
-                 */
-                ProcessStatus.NEED_MORE_IMAGES -> {
-                    //if you get this status it's better to restart the whole process from the beginning
-                }
-            }
-            */
         }
     }
 
@@ -228,10 +152,6 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-    //call back the frames then release the camera + wakelock and Initialize the camera to null
-    //Called as part of the activity lifecycle when an activity is going into the background, but has not (yet) been killed. The counterpart to onResume().
-    //When activity B is launched in front of activity A,
-    //this callback will be invoked on A. B will not be created until A's onPause() returns, so be sure to not do anything lengthy here.
     override fun onPause() {
         super.onPause()
         wakeLock!!.release()

@@ -9,7 +9,6 @@
     android:fillViewport="true">
 <LinearLayout
     android:id="@+id/activity_vital_signs_results"
-    android:background="@mipmap/bg4"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
