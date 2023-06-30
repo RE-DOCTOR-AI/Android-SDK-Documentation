@@ -2,22 +2,27 @@
 ## Overview of the SDK functionality
 Android SDK functionality allows Android developers to add a Vitals & Glucose measurement functionality into their apps by using RE.DOCTOR Android SDK.
 The SDK accepts a few parameters as input. It also requires to have some end user data like: Age, Height, Weight & Gender.
-SDK requires at least 30 seconds of camera and flash to be on to capture video which is converted to RGB array on the fly which allows to make calculations of Vitals and Glucose.
+SDK requires at least 40 seconds of camera and flash to be on to capture video which is converted to RGB array on the fly which allows to make calculations of Vitals and Glucose.
 
 ## Tutorials
 ### Installing
 1. To install the SDK move the SDK aar file into a lib folder in your project directory: ```<Android app root folder>/libs/```
-<img width="373" alt="image" src="https://user-images.githubusercontent.com/125552714/219388288-c1b04fba-29e9-4086-8e7e-ee638547cd8c.png">
+<img width="373" alt="image" src="https://github.com/RE-DOCTOR-AI/Android-SDK-Documentation/assets/125552714/9bb85b69-6af8-44d1-87ab-58587404b05d">
 
-2. Add it as a local dependency into your build.gradle file for your Android app
+3. Add it as a local dependency into your build.gradle file for your Android app
+4. For the sdk v 1.2.0 one more dependency ```de.voize:pytorch-lite-multiplatform:0.5.0``` required to be added
  
 ```gradle 
 dependencies {
-    
-    api files('libs/tvs.shared-1.2.0.aar')
+    ...
+    api files('libs/redoctor.shared-1.2.0.aar')
+
+    //addition for sdk v 1.2.0
+    implementation("de.voize:pytorch-lite-multiplatform:0.5.0")
 }  
 ```
-<img width="592" alt="image" src="https://user-images.githubusercontent.com/125552714/219388792-0fbb9d8b-7936-43c5-be92-a5fbabcca220.png">
+5. The full list of dependencies shown below and can be seen in code here: https://github.com/RE-DOCTOR-AI/Android-SDK-Documentation/blob/SDK-V2/app/build.gradle
+<img width="592" alt="image" src="https://github.com/RE-DOCTOR-AI/Android-SDK-Documentation/assets/125552714/54e445da-145c-4aef-aeb8-0fbdcd6a286b">
 
 ### Using
 You can downlad this repo and request for a demo SDK file so that you can check how the integration is working.
@@ -183,7 +188,7 @@ glucoseFrameConsumer = ImageFrameConsumerAndroid(600)
     }
 ```
 7. There are differrent statuses and you can show to the user differrent messages during the measurement process
-8. Once yse get the ```ProcessStatus.START_CALCULATING``` you can show a loader to the user so that they awar thet it requires some time to get the results. See it here: https://github.com/RE-DOCTOR-AI/Android-SDK-Documentation/blob/SDK-V2/app/src/main/java/tvs/sdk/MainActivity.kt#L152
+8. Once yse get the ```ProcessStatus.START_CALCULATING``` you can show a loader to the user so that they awar that it requires some time to get the results. See it here: https://github.com/RE-DOCTOR-AI/Android-SDK-Documentation/blob/SDK-V2/app/src/main/java/tvs/sdk/MainActivity.kt#L152
 9. We keep calculation process in a separate class here https://github.com/RE-DOCTOR-AI/Android-SDK-Documentation/blob/SDK-V2/app/src/main/java/tvs/sdk/CalculatingResults.kt
 
 #### Get results
@@ -219,19 +224,19 @@ You can see it here https://github.com/RE-DOCTOR-AI/Android-SDK-Documentation/bl
        gen = 1
    ))
 ```
-and then they used her for calculating results: https://github.com/RE-DOCTOR-AI/Android-SDK-Documentation/blob/SDK-V2/app/src/main/java/tvs/sdk/CalculatingResults.kt#L28
+and then they are used here for calculating results: https://github.com/RE-DOCTOR-AI/Android-SDK-Documentation/blob/SDK-V2/app/src/main/java/tvs/sdk/CalculatingResults.kt#L28
 ```kotlin
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_calculating_results)
 
         val glucoseLevelProcessor = GlucoseLevelProcessorAndroid()
-       ** val vitalsProcessor = VitalSignsProcessorNg(this.getUserParameters())**
+        val vitalsProcessor = VitalSignsProcessorNg(this.getUserParameters())
         ...
     }
 
 ```
-In case you have imperial measurement system in your apps you can convert that data to metric as we’re doing in our sample apps.
+In case you have imperial measurement system in your apps you can convert that data to metric and then pass to the SDK.
 
 ##### Process duration
 Remember that process of measurement lasts for 40 seconds. You can see the constant ```VITALS_PROCESS_DURATION``` which is stored in the SDK and equals 40 seconds. Which means user have to hold their finder during that time.
@@ -240,7 +245,7 @@ Debug release of SDK writes some outputs to logs so you can see if there are any
 ## Point of Contact for Support
 In case of any questions, please contact timur@re.doctor
 ## Version details
-Current version is 1.0.1 has a basic functionality to measure vitals including: 
+Current version is 1.2.0 has a functionality to measure the following parameters: 
 
 1. Blood Oxygen
 2. Respiration Rate
@@ -248,20 +253,10 @@ Current version is 1.0.1 has a basic functionality to measure vitals including:
 4. Blood Pressure
 5. Blood Glucose
 
-
 ## Screenshots
 <p float="left">
-<img src="https://user-images.githubusercontent.com/125552714/220103087-e00c5662-e045-4707-9d5e-5d4c31811db5.png" width=15% height=15%>
-<img src="https://user-images.githubusercontent.com/125552714/220103182-2e9f5f2b-06f7-490a-b469-d9b927574c54.png" width=15% height=15%>
-<img src="https://user-images.githubusercontent.com/125552714/220102951-12b56f6d-b49a-45a7-abfc-22f493c95a08.png" width=15% height=15%>
-<img src="https://user-images.githubusercontent.com/125552714/220103263-adea0bd2-a40b-4e68-9ada-a8c10aeb5184.png" width=15% height=15%>
-<img src="https://user-images.githubusercontent.com/125552714/220103314-a5663a32-8685-4ed5-b3fb-5a39615c7da8.png" width=15% height=15%>
+<img src="https://github.com/RE-DOCTOR-AI/Android-SDK-Documentation/assets/125552714/26ec0961-9230-400c-adc5-5680a9620a80" width=15% height=15%>
+<img src="https://github.com/RE-DOCTOR-AI/Android-SDK-Documentation/assets/125552714/fde9327d-c475-488e-96c4-3aacd79a8d0d" width=15% height=15%>
+<img src="https://github.com/RE-DOCTOR-AI/Android-SDK-Documentation/assets/125552714/c05331c6-8149-438e-be65-e647127849dc" width=15% height=15%>
+<img src="https://github.com/RE-DOCTOR-AI/Android-SDK-Documentation/assets/125552714/e3fc997d-ac7e-4ab3-92dd-a80ea10474aa" width=15% height=15%>
 </p>
-
-
-
-
-
-
-
-
