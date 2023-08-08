@@ -1,14 +1,15 @@
-# Android-SDK-Documentation
+# Android-SDK-Documentation v.1.2.0
 ## Overview of the SDK functionality
 Android SDK functionality allows Android developers to add a Vitals & Glucose measurement functionality into their apps by using RE.DOCTOR Android SDK.
 The SDK accepts a few parameters as input. It also requires to have some end user data like: Age, Height, Weight & Gender.
-SDK requires at least 30 seconds of camera and flash to be on to capture video which is converted to RGB array on the fly which allows to make calculations of Vitals and Glucose.
+SDK requires at least 40 seconds of camera and flash to be on to capture video which is converted to RGB array on the fly which allows to make calculations of Vitals and Glucose.
 
 ## Tutorials
 ### Installing
-1. To install the SDK move the VitalsSDK.aar and ksp.jar files into a lib folder in your project directory: ```<Android app root folder>/libs/```
-<img width="354" alt="image" src="https://user-images.githubusercontent.com/125552714/230612751-339f8bf3-f24a-4e75-9538-d1ff6585b8a3.png">
-2. Add it as a local dependency into your build.gradle file for your Android app
+<p/>1. To install the SDK move the VitalsSDK.aar and ksp.jar files into a lib folder in your project directory: ```<Android app root folder>/libs/```
+<img width="465" alt="image" src="https://github.com/RE-DOCTOR-AI/Android-SDK-Documentation/assets/125552714/c8c6e1ec-0bfa-470f-b175-b242d4c76c5f">
+
+<p/> 2. Add it as a local dependency into your build.gradle file for your Android app
  
 ```gradle 
 dependencies {
@@ -17,29 +18,29 @@ dependencies {
     implementation(fileTree("libs"))
 }  
 ```
-<img width="670" alt="image" src="https://user-images.githubusercontent.com/125552714/230612913-ddd48a12-26d7-4d4a-a233-2e4942b8ed55.png">
+<img width="716" alt="image" src="https://github.com/RE-DOCTOR-AI/Android-SDK-Documentation/assets/125552714/2f6e9bee-0701-4aeb-b0ab-0ba7eee5ab35">
 
 ### Using
 You can downlad this repo and request for a demo SDK file so that you can check how the integration is working.
 #### Prepare data and call SDK functions
 Here is an example on how to use it. Please remember that you need to work with Android camera and create a special class/classes where you can prepare data for SDK and receive results from it.
-1. Add these configuration to access camera to your AndroidManifest file in resource folder. You can find it here https://github.com/RE-DOCTOR-AI/Android-SDK-Documentation/blob/main/app/src/main/AndroidManifest.xml
-```XML 
-    <uses-permission android:name="android.permission.CAMERA" />
+</p>1. Add these configuration to access camera to your AndroidManifest file in resource folder. You can find it here https://github.com/RE-DOCTOR-AI/Android-SDK-Documentation/blob/1.2.0/app/src/main/AndroidManifest.xml
 
+```xml 
+    <uses-permission android:name="android.permission.CAMERA" />
     <uses-feature android:name="android.hardware.camera" />
     <uses-feature android:name="android.hardware.camera.flash" />
     <uses-feature android:name="android.hardware.camera.autofocus" />
-
     <uses-permission android:name="android.permission.FLASHLIGHT" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.INTERNET" /> 
+    
 ```
+<p/>2. Add the following functions and call them before you start working with camera so that you don't need to manually set up camera permissions for your app. You can see how it's done here https://github.com/RE-DOCTOR-AI/Android-SDK-Documentation/blob/1.2.0/app/src/main/java/com/tvs/android/AboutApp.java#L46
 
-2. Add the following functions and call them before you start working with camera so that you don't need to manually set up camera permissions for your app. You can see how it's done here https://github.com/RE-DOCTOR-AI/Android-SDK-Documentation/blob/main/app/src/main/java/tvs/sdk/AboutApp.kt#L44
-```kotlin 
+ ```kotlin 
     // Function to check and request permission.
     public void checkPermission(String permission, int requestCode) {
         if (ContextCompat.checkSelfPermission(this, permission) == PackageManager.PERMISSION_DENIED) {
@@ -51,7 +52,8 @@ Here is an example on how to use it. Please remember that you need to work with 
     }   
 ```
 
-3. In your codebase with android components you should implement class extends AppCompatActivity which opens camera and process images in onPreviewFrame method. The complete code can be found here https://github.com/RE-DOCTOR-AI/Android-SDK-Documentation/blob/main/app/src/main/java/tvs/sdk/MainActivity.kt
+<p/>3. In your codebase with android components you should implement class extends AppCompatActivity which opens camera and process images in onPreviewFrame method. The complete code can be found here https://github.com/RE-DOCTOR-AI/Android-SDK-Documentation/blob/1.2.0/app/src/main/java/com/tvs/android/VitalSignsProcess.kt#L20
+
 ```kotlin 
 class VitalSignsProcess : AppCompatActivity() {
     private var preview: SurfaceView? = null
@@ -94,8 +96,10 @@ class VitalSignsProcess : AppCompatActivity() {
       
 ```
 
-4. In that class you should also implement  ```onPreviewFrame``` function which will allow you to pass data to SDK and get statuses
-```
+<p/>4. In that class you should also implement  ```onPreviewFrame``` function which will allow you to pass data to SDK and get statuses
+   https://github.com/RE-DOCTOR-AI/Android-SDK-Documentation/blob/1.2.0/app/src/main/java/com/tvs/android/VitalSignsProcess.kt#L136
+
+ ```kotlin
         //SDK required: function which runs for each frame captured by camera
         //-->
         override fun onPreviewFrame(data: ByteArray, cam: Camera) {
@@ -136,12 +140,13 @@ class VitalSignsProcess : AppCompatActivity() {
     //<--
 ```
 
-5. You can find the full class implementation here https://github.com/RE-DOCTOR-AI/Android-SDK-Documentation/blob/main/app/src/main/java/tvs/sdk/MainActivity.kt
+5. You can find the full class implementation here https://github.com/RE-DOCTOR-AI/Android-SDK-Documentation/blob/1.2.0/app/src/main/java/com/tvs/android/VitalSignsProcess.kt
 
-#### Get results
+#### Geting results
 On the class above you can see the status ```vitalsFrameResult == ProcessStatus.START_CALCULATING
 && glucoseFrameResult == ProcessStatus.START_CALCULATING```. So once this status is reached system start calculating process. In our example app we check it asynchronously 
-You can see it here https://github.com/RE-DOCTOR-AI/Android-SDK-Documentation/blob/main/app/src/main/java/tvs/sdk/MainActivity.kt#L107
+You can see it here https://github.com/RE-DOCTOR-AI/Android-SDK-Documentation/blob/1.2.0/app/src/main/java/com/tvs/android/VitalSignsProcess.kt#L159
+
 ```kotlin
 ...            
     else if (vitalsFrameResult == ProcessStatus.START_CALCULATING
@@ -180,7 +185,7 @@ private fun onStartProcessing() {
 
 ```
 
-6. On file CalculatingResults you can see the code which works asynchronously
+6. On file CalculatingResults you can see the code which works asynchronously https://github.com/RE-DOCTOR-AI/Android-SDK-Documentation/blob/1.2.0/app/src/main/java/com/tvs/android/CalculatingResults.kt
 
 ```kotlin
     ...
@@ -241,7 +246,7 @@ Library needs some patient data in a metric system so use kilograms(kg) and cent
 3. Age (years)
 4. Gender (1 - Male, 2 - Female). We are sorry to ask you to chose only between those two numbers but calculations are depend on them.
 
-You can see it here https://github.com/RE-DOCTOR-AI/Android-SDK-Documentation/blob/main/app/src/main/java/tvs/sdk/MainActivity.kt#L35
+You can see it here https://github.com/RE-DOCTOR-AI/Android-SDK-Documentation/blob/1.2.0/app/src/main/java/com/tvs/android/VitalSignsProcess.kt#L92
 In case you have imperial measurement system in your apps you can convert that data to metric as we’re doing in our sample apps.
 ```kotlin
     intent.putExtra("userParams", UserParameters(
@@ -252,28 +257,28 @@ In case you have imperial measurement system in your apps you can convert that d
     ))
 ```
 ##### Process duration
-Remember that process of measurement lasts for 40 seconds. You can see the constant ```VITALS_PROCESS_DURATION``` which is stored in the SDK and equals 40 seconds. Which means user have to hold their finder during that time.
+Remember that process of measurement lasts for 40 seconds. You can see the import block ```import com.tvs.utils.VITALS_PROCESS_DURATION``` which is stored in the SDK and equals 40 seconds. Which means user have to hold their finder during that time.
 ### Troubleshooting
 Debug release of SDK writes some outputs to logs so you can see if there are any issues.
 ## Point of Contact for Support
 In case of any questions, please contact timur@re.doctor
 ## Version details
-Current version is 1.2.0 has a basic functionality to measure vitals & glucose including: 
+Current version is 1.2.0 has functionality to measure vitals & glucose including: 
 
 1. Blood Oxygen
-2. Respiration Rate
-3. Heart Rate
+2. Heart Rate 
+3. Respiration Rate
 4. Blood Pressure
 5. Blood Glucose
 
 
 ## Screenshots
 <p float="left">
-<img src="https://user-images.githubusercontent.com/125552714/220103087-e00c5662-e045-4707-9d5e-5d4c31811db5.png" width=15% height=15%>
-<img src="https://user-images.githubusercontent.com/125552714/220103182-2e9f5f2b-06f7-490a-b469-d9b927574c54.png" width=15% height=15%>
-<img src="https://user-images.githubusercontent.com/125552714/220102951-12b56f6d-b49a-45a7-abfc-22f493c95a08.png" width=15% height=15%>
-<img src="https://user-images.githubusercontent.com/125552714/220103263-adea0bd2-a40b-4e68-9ada-a8c10aeb5184.png" width=15% height=15%>
-<img src="https://user-images.githubusercontent.com/125552714/220103314-a5663a32-8685-4ed5-b3fb-5a39615c7da8.png" width=15% height=15%>
+ <img width="180" alt="image" src="https://github.com/RE-DOCTOR-AI/Android-SDK-Documentation/assets/125552714/1af59c62-17fa-4a3f-a150-771a879520e5">
+ <img width="180" alt="image" src="https://github.com/RE-DOCTOR-AI/Android-SDK-Documentation/assets/125552714/dee08783-20cc-447b-b8f5-1bd44b32cb79">
+ <img width="180" alt="image" src="https://github.com/RE-DOCTOR-AI/Android-SDK-Documentation/assets/125552714/fc00b4d4-0867-407a-9f6d-8320847dc330">
+ <img width="180" alt="image" src="https://github.com/RE-DOCTOR-AI/Android-SDK-Documentation/assets/125552714/be4da00e-6271-426f-81a0-8e628a4293b0">
+ <img width="180" alt="image" src="https://github.com/RE-DOCTOR-AI/Android-SDK-Documentation/assets/125552714/075fba55-5bb1-4156-ab94-a8e9ad6b9220">
 </p>
 
 
