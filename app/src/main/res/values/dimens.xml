@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <dimen name="size_8dp">8dp</dimen>
+    <dimen name="size_10dp">10dp</dimen>
+    <dimen name="size_16dp">16dp</dimen>
+    <dimen name="size_20dp">20dp</dimen>
+    <dimen name="size_30dp">30dp</dimen>
+    <dimen name="size_100dp">100dp</dimen>
+
+    <dimen name="caption">12sp</dimen>
+    <dimen name="body_2">14sp</dimen>
+    <dimen name="body_1">16sp</dimen>
+
+
+</resources>

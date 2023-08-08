@@ -6,14 +6,15 @@ SDK requires at least 30 seconds of camera and flash to be on to capture video w
 
 ## Tutorials
 ### Installing
-1. To install the SDK move the VitalsSDK.aar file into a lib folder in your project directory: ```<Android app root folder>/libs/```
+1. To install the SDK move the VitalsSDK.aar and ksp.jar files into a lib folder in your project directory: ```<Android app root folder>/libs/```
 <img width="354" alt="image" src="https://user-images.githubusercontent.com/125552714/230612751-339f8bf3-f24a-4e75-9538-d1ff6585b8a3.png">
 2. Add it as a local dependency into your build.gradle file for your Android app
  
 ```gradle 
 dependencies {
     
-    implementation fileTree(dir: 'libs', include: ['*.jar', '*.aar'])
+    //SDK files
+    implementation(fileTree("libs"))
 }  
 ```
 <img width="670" alt="image" src="https://user-images.githubusercontent.com/125552714/230612913-ddd48a12-26d7-4d4a-a233-2e4942b8ed55.png">
@@ -24,142 +25,214 @@ You can downlad this repo and request for a demo SDK file so that you can check 
 Here is an example on how to use it. Please remember that you need to work with Android camera and create a special class/classes where you can prepare data for SDK and receive results from it.
 1. Add these configuration to access camera to your AndroidManifest file in resource folder. You can find it here https://github.com/RE-DOCTOR-AI/Android-SDK-Documentation/blob/main/app/src/main/AndroidManifest.xml
 ```XML 
-<uses-permission android:name="android.permission.CAMERA" />
-<uses-feature android:name="android.hardware.camera" />
-<uses-feature android:name="android.hardware.camera.flash" />
-<uses-feature android:name="android.hardware.camera.autofocus" />
-<uses-permission android:name="android.permission.FLASHLIGHT" />
-<uses-permission android:name="android.permission.WAKE_LOCK" />  
+    <uses-permission android:name="android.permission.CAMERA" />
+
+    <uses-feature android:name="android.hardware.camera" />
+    <uses-feature android:name="android.hardware.camera.flash" />
+    <uses-feature android:name="android.hardware.camera.autofocus" />
+
+    <uses-permission android:name="android.permission.FLASHLIGHT" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
 ```
 
 2. Add the following functions and call them before you start working with camera so that you don't need to manually set up camera permissions for your app. You can see how it's done here https://github.com/RE-DOCTOR-AI/Android-SDK-Documentation/blob/main/app/src/main/java/tvs/sdk/AboutApp.kt#L44
 ```kotlin 
-    private fun checkPermission(permission: String, requestCode: Int) {
-        if (ContextCompat.checkSelfPermission(
-                this,
-                permission
-            ) == PackageManager.PERMISSION_DENIED
-        ) {
+    // Function to check and request permission.
+    public void checkPermission(String permission, int requestCode) {
+        if (ContextCompat.checkSelfPermission(this, permission) == PackageManager.PERMISSION_DENIED) {
+            ActivityCompat.requestPermissions(this, new String[]{permission}, requestCode);
+
             // Requesting the permission
-            ActivityCompat.requestPermissions(this, arrayOf(permission), requestCode)
+            ActivityCompat.requestPermissions(this, new String[]{permission}, requestCode);
         }
-    }     
+    }   
 ```
 
 3. In your codebase with android components you should implement class extends AppCompatActivity which opens camera and process images in onPreviewFrame method. The complete code can be found here https://github.com/RE-DOCTOR-AI/Android-SDK-Documentation/blob/main/app/src/main/java/tvs/sdk/MainActivity.kt
 ```kotlin 
-package tvs.sdk
+class VitalSignsProcess : AppCompatActivity() {
+    private var preview: SurfaceView? = null
 
-import android.content.Context
-import android.content.Intent
-import android.hardware.Camera
-import android.os.Bundle
-import android.os.PowerManager
-import android.view.SurfaceHolder
-import android.view.SurfaceView
-import android.widget.ProgressBar
-import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
-
-import com.tvs.model.User
-import com.tvs.utils.ProcessStatus
-import com.tvs.vitals.VitalSignsProcessor
-
-const val VITALS_PROCESS_DURATION = 35
+    //SDK required: This to vars are required to pass frames data to SDK
+    private lateinit var vitalsFrameConsumer: ImageFrameConsumerAndroid
+    private lateinit var glucoseFrameConsumer: ImageFrameConsumerAndroid
 
 
-class MainActivity : AppCompatActivity() {
+    private var mainToast: Toast? = null
 
-  private val previewCallback: Camera.PreviewCallback = object : Camera.PreviewCallback {
+    //ProgressBar
+    private var progBar: ProgressBar? = null
+    var progP = 0
+    var inc = 0
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_vital_signs_process)
+
+        //SDK required: Creating frames consumers so that SDK can get frames and process data
+        vitalsFrameConsumer = ImageFrameConsumerAndroid(900)
+        glucoseFrameConsumer = ImageFrameConsumerAndroid(600)
+
+        // XML - Java Connecting
+        preview = findViewById(R.id.preview)
+        previewHolder = preview!!.holder
+        previewHolder!!.addCallback(surfaceCallback)
+        previewHolder!!.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS)
+        progBar = findViewById(R.id.VSPB)
+        progBar!!.progress = 0
+
+        // WakeLock Initialization : Forces the phone to stay On
+        val pm: PowerManager = getSystemService(Context.POWER_SERVICE) as PowerManager
+        wakeLock = pm.newWakeLock(PowerManager.FULL_WAKE_LOCK, "tvs:DoNotDimScreen")
+    }
+    
+    ...
+}    
+      
+```
+
+4. In that class you should also implement  ```onPreviewFrame``` function which will allow you to pass data to SDK and get statuses
+```
+        //SDK required: function which runs for each frame captured by camera
+        //-->
         override fun onPreviewFrame(data: ByteArray, cam: Camera) {
-        //some code will be here
-        }
-  }      
-}      
-```
+            val size = cam.parameters.previewSize ?: throw NullPointerException()
 
-4. There is one method processImage in ```vitals.*Processor``` files which you should use in your android app. It accepts the byte array with image data, camera size (weight + height) and some user’s anthropometric data. It returns ProcessStatus enum, with 5 statuses:
-```
-RED_INTENSITY_NOT_ENOUGH("Not good red intensity to process. Should start again"),
+            val width = size.width
+            val height = size.height
 
-MEASUREMENT_FAILED("Measurement Failed. Should Start again"),
+            val vitalsFrameResult = vitalsFrameConsumer.ingest(data, width, height)
+            val glucoseFrameResult = glucoseFrameConsumer.ingest(data, width, height)
 
-IN_PROGRESS("Processing in progress"),
-
-PROCESS_FINISHED("Processing finished"),
-
-NEED_MORE_IMAGES("Need more images to process")
-```
-
-```kotlin
-package tvs.sdk
-
-//imports block goes here
-
-class MainActivity : AppCompatActivity() {
-
-      private val previewCallback: Camera.PreviewCallback = object : Camera.PreviewCallback {
-            override fun onPreviewFrame(data: ByteArray, cam: Camera) {
-                  val size = cam.parameters.previewSize ?: throw NullPointerException()
-      
-                  val width = size.width
-                  val height = size.height
-      
-                  when (vsp.processImage(data, width, height)) {
-                      ProcessStatus.RED_INTENSITY_NOT_ENOUGH -> {
-                          inc = 0
-                          progP = inc
-                          progBar!!.progress = progP
-                      }
-                      ProcessStatus.MEASUREMENT_FAILED -> {
-                          inc = 0
-                          progP = inc
-                          progBar!!.progress = progP
-                          mainToast =
-                              Toast.makeText(applicationContext, "Measurement Failed", Toast.LENGTH_SHORT)
-                          mainToast!!.show()
-                      }
-                      ProcessStatus.IN_PROGRESS -> {
-                          progP = inc++ / VITALS_PROCESS_DURATION
-                          progBar!!.progress = progP
-                      }
-                      ProcessStatus.PROCESS_FINISHED -> {
-                          val i = Intent(this@MainActivity, VitalSignsResults::class.java)
-                          i.putExtra("O2R", vsp.o2.value)
-                          i.putExtra("breath", vsp.Breath.value)
-                          i.putExtra("bpm", vsp.Beats.value)
-                          i.putExtra("SP", vsp.SP.value)
-                          i.putExtra("DP", vsp.DP.value)
-                          startActivity(i)
-                          finish()
-                      }
-                      ProcessStatus.NEED_MORE_IMAGES -> {
-                          //need to process more images
-                      }
-                  }
+            if (
+                vitalsFrameResult == ProcessStatus.RED_INTENSITY_NOT_ENOUGH
+                || glucoseFrameResult == ProcessStatus.RED_INTENSITY_NOT_ENOUGH
+            ) {
+                onLowIntensity()
+            } else if (
+                vitalsFrameResult == ProcessStatus.MEASUREMENT_FAILED
+                || glucoseFrameResult == ProcessStatus.MEASUREMENT_FAILED
+            ) {
+                onConsumptionFailure()
+            } else if (vitalsFrameResult == ProcessStatus.IN_PROGRESS
+                || glucoseFrameResult == ProcessStatus.IN_PROGRESS
+            ) {
+                onProgress()
+            } else if (vitalsFrameResult == ProcessStatus.START_CALCULATING
+                && glucoseFrameResult == ProcessStatus.START_CALCULATING
+            ) {
+                //that is the new status required as Glucose calculation takes time and we need to process is
+                onStartProcessing()
+            } else if (vitalsFrameResult == ProcessStatus.NEED_MORE_IMAGES
+                || glucoseFrameResult == ProcessStatus.NEED_MORE_IMAGES
+            ) {
+                onMoreImages()
             }
-      }      
-}
+        }
+    }
+    //<--
 ```
 
 5. You can find the full class implementation here https://github.com/RE-DOCTOR-AI/Android-SDK-Documentation/blob/main/app/src/main/java/tvs/sdk/MainActivity.kt
 
 #### Get results
-On the class above you can see the status ```kotlinProcessStatus.PROCESS_FINISHED```. So once this status is reached you can get values from the library.
+On the class above you can see the status ```vitalsFrameResult == ProcessStatus.START_CALCULATING
+&& glucoseFrameResult == ProcessStatus.START_CALCULATING```. So once this status is reached system start calculating process. In our example app we check it asynchronously 
 You can see it here https://github.com/RE-DOCTOR-AI/Android-SDK-Documentation/blob/main/app/src/main/java/tvs/sdk/MainActivity.kt#L107
 ```kotlin
-ProcessStatus.PROCESS_FINISHED -> {
-    val i = Intent(this@MainActivity, VitalSignsResults::class.java)
-    i.putExtra("O2R", vsp.o2.value)
-    i.putExtra("breath", vsp.Breath.value)
-    i.putExtra("bpm", vsp.Beats.value)
-    i.putExtra("SP", vsp.SP.value)
-    i.putExtra("DP", vsp.DP.value)
-    startActivity(i)
+...            
+    else if (vitalsFrameResult == ProcessStatus.START_CALCULATING
+    && glucoseFrameResult == ProcessStatus.START_CALCULATING
+    ) {
+        //that is the new status required as Glucose calculation takes time and we need to process is
+        onStartProcessing()
+    }
+...
+
+```      
+
+you can see the function ```onStartProcessing()``` which is used to prepare some data for SDK and move user to the final screen where data got calculated and then showed.
+
+```kotlin
+...
+private fun onStartProcessing() {
+    //SDK required: passing frames data to SDK consumers
+    val vitalsFrames = vitalsFrameConsumer.framesData()
+    val glucoseFrames = glucoseFrameConsumer.framesData()
+
+    //put frames and user params to the intent so that we can use them on next screen
+    val intent = Intent(this@VitalSignsProcess, CalculatingResults::class.java)
+    intent.putExtra("vitalsData", vitalsFrames)
+    intent.putExtra("glucoseData", glucoseFrames)
+    intent.putExtra("userParams", UserParameters(
+        height = 180.0,//cm
+        weight = 74.0,//kg
+        age = 39,//years
+        gen = 1//1:male, 2: female
+    ))
+    startActivity(intent)
     finish()
 }
-```                
+...
+
+```
+
+6. On file CalculatingResults you can see the code which works asynchronously
+
+```kotlin
+    ...
+        //SDK required: vitals and glucose processors
+        //-->
+        val glucoseLevelProcessor = GlucoseLevelProcessorAndroid()
+        val vitalsProcessor = VitalSignsProcessorNg(this.getUserParameters())
+        //<--
+
+        //flag to keep screen on because glucose calculation can take up to two minutes
+        window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+
+        glucoseJob = lifecycleScope.launch {
+            startGlucoseLoadingAnimation().collect { text ->
+                glucoseLevelField.text = text
+                startVitalsLoadingAnimation(text)
+            }
+        }
+
+
+        lifecycleScope.launch(Dispatchers.Default)  {
+            //SDK required: Here we wait till glucose is calculated and show results
+            //-->
+            val glucoseFrameData = getGlucoseFrameData()
+            val glucoseResult = glucoseLevelProcessor.process(glucoseFrameData)
+            if (glucoseResult == ProcessingStatus.FINISHED) {
+                glucoseJob?.cancel()
+                glucoseLevelMax = glucoseLevelProcessor.getGlucoseMaxValue()
+                glucoseLevelMin = glucoseLevelProcessor.getGlucoseMinValue()
+            }
+            showGlucose()
+            withContext(Dispatchers.Main) { blockingButtons(true) }
+            //<--
+        }
+
+        lifecycleScope.launch(Dispatchers.Default) {
+            //SDK required: here we wait till vitals calculated and show them
+            //-->
+            val vitalsFrameData = getVitalsFrameData()
+            val vitalsResult = vitalsProcessor.process(vitalsFrameData)
+            if (vitalsResult == ProcessingStatus.FINISHED) {
+                bloodOxygen = vitalsProcessor.o2.value
+                heartRate = vitalsProcessor.Beats.value
+                respirationRate = vitalsProcessor.Breath.value
+                systolicBloodPressure = vitalsProcessor.SP.value
+                diastolicBloodPressure = vitalsProcessor.DP.value
+            }
+            showVitals()
+            //<--
+        ...
+```
+
 #### Keep in mind
 ##### Metric vs Imperial
 Library needs some patient data in a metric system so use kilograms(kg) and centimetres (cm). Here is the list:
@@ -171,29 +244,28 @@ Library needs some patient data in a metric system so use kilograms(kg) and cent
 You can see it here https://github.com/RE-DOCTOR-AI/Android-SDK-Documentation/blob/main/app/src/main/java/tvs/sdk/MainActivity.kt#L35
 In case you have imperial measurement system in your apps you can convert that data to metric as we’re doing in our sample apps.
 ```kotlin
-vsp = VitalSignsProcessor(
-            User(
-                height = 180.0, //cm
-                weight = 73.0, //kg
-                age = 38, //years
-                gen = 1
-
-            )
-  )
+    intent.putExtra("userParams", UserParameters(
+        height = 180.0,//cm
+        weight = 74.0,//kg
+        age = 39,//years
+        gen = 1//1:male, 2: female
+    ))
 ```
 ##### Process duration
-Remember that process of measurement lasts for 30 seconds. You can see the constant ```VITALS_PROCESS_DURATION``` which is stored in the SDK and equals 30 seconds. Which means user have to hold their finder during that time.
+Remember that process of measurement lasts for 40 seconds. You can see the constant ```VITALS_PROCESS_DURATION``` which is stored in the SDK and equals 40 seconds. Which means user have to hold their finder during that time.
 ### Troubleshooting
 Debug release of SDK writes some outputs to logs so you can see if there are any issues.
 ## Point of Contact for Support
 In case of any questions, please contact timur@re.doctor
 ## Version details
-Current version is 1.0.1 has a basic functionality to measure vitals including: 
+Current version is 1.2.0 has a basic functionality to measure vitals & glucose including: 
 
 1. Blood Oxygen
 2. Respiration Rate
 3. Heart Rate
 4. Blood Pressure
+5. Blood Glucose
+
 
 ## Screenshots
 <p float="left">

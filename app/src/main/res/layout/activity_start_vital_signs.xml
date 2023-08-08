@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_gravity="center"
+    android:orientation="vertical"
+    android:fillViewport="true">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@mipmap/bg4"
+    android:gravity="top"
+    android:orientation="vertical"
+    android:paddingStart="20dp"
+    android:paddingTop="20dp"
+    android:paddingRight="20dp"
+    android:paddingBottom="20dp"
+    tools:context="com.tvs.android.StartVitalSigns">
+
+    <ImageView
+        android:id="@+id/imageView3"
+        android:layout_width="wrap_content"
+        android:layout_height="80pt"
+        android:layout_gravity="center"
+        app:srcCompat="@mipmap/rsz_download" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_height="wrap_content"
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp"
+        android:layout_width="wrap_content"
+        android:layout_gravity="center"
+        android:text="Place your index finger on the rear camera so that it covers both camera and flash.\nMake sure the camera is fully covered.\nYou should be able to see some pulsation.\nMeasure in a shaded environment.\nDon't move your finger until the measurement is complete.\nFinally place your finger then press start.\n\nThe process could take up to 60 seconds.\nIn case of failure, just click the 'Start again' button on the next screen."
+        android:textColor="@color/colorPrimaryDark" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="center|bottom"
+        android:orientation="vertical">
+        <Button
+            android:id="@+id/StartVS"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/colorButton"
+            android:contentDescription="Start"
+            android:text="Start"
+            android:layout_marginTop="30dp"
+            android:layout_marginBottom="10dp"
+            android:textAllCaps="false" />
+    </LinearLayout>
+</LinearLayout>
+</ScrollView>
