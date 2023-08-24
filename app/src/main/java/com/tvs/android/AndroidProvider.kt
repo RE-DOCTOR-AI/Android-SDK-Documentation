@@ -5,6 +5,8 @@ import com.tvs.api.DeviceProvider
 import com.tvs.model.User
 import com.tvs.model.UserParameters
 
+//SDK required: Class to provide SDK with user parameters
+//-->
 class AndroidProvider(
     private val prefs: SharedPreferences,
 ): DeviceProvider {
@@ -18,3 +20,4 @@ class AndroidProvider(
         )
     }
 }
+//<--

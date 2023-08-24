@@ -12,7 +12,6 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.tvs.model.ImageFrameConsumerAndroid
-import com.tvs.model.UserParameters
 import com.tvs.utils.ProcessStatus
 import com.tvs.utils.VITALS_PROCESS_DURATION
 
@@ -24,8 +23,6 @@ class VitalSignsProcess : AppCompatActivity() {
     //SDK required: This to vars are required to pass frames data to SDK
     private lateinit var vitalsFrameConsumer: ImageFrameConsumerAndroid
     private lateinit var glucoseFrameConsumer: ImageFrameConsumerAndroid
-
-
 
     private var mainToast: Toast? = null
 
