@@ -137,6 +137,8 @@ class VitalSignsProcess : AppCompatActivity() {
 ```
 
 5. You can find the full class implementation here https://github.com/RE-DOCTOR-AI/Android-SDK-Documentation/blob/main/app/src/main/java/tvs/sdk/MainActivity.kt
+6. You should implement one class to pass to SDK end user parameters (Age, Height, Weight, etc.). See it here: https://github.com/RE-DOCTOR-AI/Android-SDK-Documentation/blob/1.3.0/app/src/main/java/com/tvs/android/AndroidProvider.kt
+7. You should implement one class to put license key to SDK. See it here: https://github.com/RE-DOCTOR-AI/Android-SDK-Documentation/blob/1.3.0/app/src/main/java/com/tvs/android/App.kt
 
 #### Get results
 On the class above you can see the status ```vitalsFrameResult == ProcessStatus.START_CALCULATING
@@ -252,7 +254,14 @@ In case you have imperial measurement system in your apps you can convert that d
     ))
 ```
 ##### Process duration
-Remember that process of measurement lasts for 40 seconds. You can see the constant ```VITALS_PROCESS_DURATION``` which is stored in the SDK and equals 40 seconds. Which means user have to hold their finder during that time.
+Remember that process of measurement lasts for 45 seconds. You can see the constant ```VITALS_PROCESS_DURATION``` which is stored in the SDK and equals 40 seconds. Which means user have to hold their finder during that time.
+##### License key
+Bear in mind that license key will be rotated (it will be agreed with separately with your company). 
+There are few option to do it. Here are two just for example:
+1. Keep it inside the app but closeer to rotation date you will have to update it and also update your app for endusers in order they can still use it
+2. Keep it out side of the app so that you can just update the key and leave your app without any updates
+##### Internet connection
+SDK requires periodical internet connection in order to send logs to the server. It's recommended to use it while connected to interned at least once in a few days.
 ### Troubleshooting
 Debug release of SDK writes some outputs to logs so you can see if there are any issues.
 ## Point of Contact for Support
