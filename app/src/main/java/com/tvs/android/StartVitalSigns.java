@@ -29,6 +29,4 @@ public class StartVitalSigns extends AppCompatActivity {
         finish();
         super.onBackPressed();
     }
-
-
 }

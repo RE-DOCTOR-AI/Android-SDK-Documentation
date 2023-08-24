@@ -10,8 +10,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.tvs.model.FramesDataAndroid
 import com.tvs.model.GlucoseLevelProcessorAndroid
-import com.tvs.model.User
-import com.tvs.model.UserParameters
 import com.tvs.utils.ProcessingStatus
 import com.tvs.vitals.VitalSignsProcessorNg
 import kotlinx.coroutines.Dispatchers
@@ -21,6 +19,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import android.util.Log
 
 class CalculatingResults : AppCompatActivity() {
 
@@ -50,13 +49,14 @@ class CalculatingResults : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_vital_signs_results)
-        
+        Log.d(TAG, "CalculatingResults -> onCreate()")
+
         blockingButtons(false)
 
         //SDK required: vitals and glucose processors
         //-->
         val glucoseLevelProcessor = GlucoseLevelProcessorAndroid()
-        val vitalsProcessor = VitalSignsProcessorNg(this.getUserParameters())
+        val vitalsProcessor = VitalSignsProcessorNg()
         //<--
 
         //flag to keep screen on because glucose calculation can take up to two minutes
@@ -101,13 +101,11 @@ class CalculatingResults : AppCompatActivity() {
             //<--
         }
 
-
         startAgain.setOnClickListener { v: View ->
             val intent = Intent(v.context, AboutApp::class.java)
             startActivity(intent)
             finish()
         }
-
     }
 
     //to block button till we wait for results of calculation
@@ -137,6 +135,7 @@ class CalculatingResults : AppCompatActivity() {
     //SDK required: show calculated glucose
     //-->
     private suspend fun showGlucose() {
+        Log.d(TAG, "CalculatingResults -> showGlucose()")
         withContext(Dispatchers.Main) {
             glucoseLevelField.text = "%d - %d".format(glucoseLevelMin, glucoseLevelMax)
             glucoseLevelField.setTextColor(resources.getColor(R.color.black, theme))
@@ -173,19 +172,9 @@ class CalculatingResults : AppCompatActivity() {
     }
     //<--
 
-    //getting user parameters and frames data saved earlier
-    private fun getUserParameters(): User {
-        val bundle = intent.extras ?: throw IllegalArgumentException("No bundle")
-
-        if (!bundle.containsKey("userParams")) {
-            throw IllegalArgumentException("No userParams in bundle")
-        }
-
-        return bundle.getSerializable("userParams") as UserParameters?
-            ?: throw IllegalArgumentException("No userParams in bundle")
-    }
 
     private fun getGlucoseFrameData(): FramesDataAndroid {
+        Log.d(TAG, "CalculatingResults -> getGlucoseFrameData()")
         val bundle = intent.extras ?: throw IllegalArgumentException("No bundle")
 
         if (!bundle.containsKey("glucoseData")) {
@@ -197,6 +186,7 @@ class CalculatingResults : AppCompatActivity() {
     }
 
     private fun getVitalsFrameData(): FramesDataAndroid {
+        Log.d(TAG, "CalculatingResults -> getVitalsFrameData()")
         val bundle = intent.extras ?: throw IllegalArgumentException("No bundle")
 
         if (!bundle.containsKey("vitalsData")) {
@@ -207,3 +197,4 @@ class CalculatingResults : AppCompatActivity() {
             ?: throw IllegalArgumentException("No vitalsData in bundle")
     }
 }
+private const val TAG = "CalculatingResults"

@@ -18,11 +18,13 @@ import com.tvs.utils.VITALS_PROCESS_DURATION
 
 
 class VitalSignsProcess : AppCompatActivity() {
+
     private var preview: SurfaceView? = null
 
     //SDK required: This to vars are required to pass frames data to SDK
     private lateinit var vitalsFrameConsumer: ImageFrameConsumerAndroid
     private lateinit var glucoseFrameConsumer: ImageFrameConsumerAndroid
+
 
 
     private var mainToast: Toast? = null
@@ -37,7 +39,7 @@ class VitalSignsProcess : AppCompatActivity() {
         setContentView(R.layout.activity_vital_signs_process)
 
         //SDK required: Creating frames consumers so that SDK can get frames and process data
-        vitalsFrameConsumer = ImageFrameConsumerAndroid(900)
+        vitalsFrameConsumer = ImageFrameConsumerAndroid(1200)
         glucoseFrameConsumer = ImageFrameConsumerAndroid(600)
 
         // XML - Java Connecting
@@ -89,12 +91,7 @@ class VitalSignsProcess : AppCompatActivity() {
             val intent = Intent(this@VitalSignsProcess, CalculatingResults::class.java)
             intent.putExtra("vitalsData", vitalsFrames)
             intent.putExtra("glucoseData", glucoseFrames)
-            intent.putExtra("userParams", UserParameters(
-                height = 180.0,//cm
-                weight = 74.0,//kg
-                age = 39,//years
-                gen = 1//1:male, 2: female
-            ))
+
             startActivity(intent)
             finish()
         }
@@ -128,9 +125,7 @@ class VitalSignsProcess : AppCompatActivity() {
         }
         //<--
 
-        /**
-         * {@inheritDoc}
-         */
+
         //SDK required: function which runs for each frame captured by camera
         //-->
         override fun onPreviewFrame(data: ByteArray, cam: Camera) {

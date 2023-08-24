@@ -2,6 +2,7 @@ package com.tvs.android;
 
 import android.Manifest;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.widget.Button;
@@ -12,15 +13,24 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+
 public class AboutApp extends AppCompatActivity {
     private static final int CAMERA_PERMISSION_CODE = 100;
     private int p;
+    private SharedPreferences sharedPreferences;
+    //String json;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_about_app);
+
+        initVariables();
         addNextListeners();
+    }
+
+    private void initVariables() {
+        sharedPreferences = getSharedPreferences(App.PREFS_KEY, MODE_PRIVATE);
     }
 
     private void addNextListeners() {
@@ -28,16 +38,13 @@ public class AboutApp extends AppCompatActivity {
         TextView versionNameEditText = this.findViewById(R.id.VersionName);
         versionNameEditText.setText(versionName);
 
-        Button Next = this.findViewById(R.id.Next);
+        Button next = this.findViewById(R.id.Next);
         checkPermission(Manifest.permission.CAMERA, CAMERA_PERMISSION_CODE);
 
-        Next.setOnClickListener(v -> {
-            p = 2;
+        next.setOnClickListener(v -> {
             Intent i = new Intent(v.getContext(), StartVitalSigns.class);
-            i.putExtra("Page", p);
             startActivity(i);
             finish();
-
         });
 
     }

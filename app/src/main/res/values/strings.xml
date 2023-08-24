@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">SDK</string>
+    <string name="app_name">RE.DOCTOR SDK Example app</string>
     <string name="msg">Please enable all permission</string>
     <string name="calculating_results_prompt">Calculating results, please wait…</string>
     <string name="not_enough_data">not enough data</string>
