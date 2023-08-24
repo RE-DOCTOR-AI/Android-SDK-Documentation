@@ -2,7 +2,7 @@
 ## Overview of the SDK functionality
 Android SDK functionality allows Android developers to add a Vitals & Glucose measurement functionality into their apps by using RE.DOCTOR Android SDK.
 The SDK accepts a few parameters as input. It also requires to have some end user data like: Age, Height, Weight & Gender.
-SDK requires at least 30 seconds of camera and flash to be on to capture video which is converted to RGB array on the fly which allows to make calculations of Vitals and Glucose.
+SDK requires at least 45 seconds of camera and flash to be on to capture video which is converted to RGB array on the fly which allows to make calculations of Vitals and Glucose.
 
 ## Tutorials
 ### Installing
@@ -254,7 +254,7 @@ In case you have imperial measurement system in your apps you can convert that d
     ))
 ```
 ##### Process duration
-Remember that process of measurement lasts for 45 seconds. You can see the constant ```VITALS_PROCESS_DURATION``` which is stored in the SDK and equals 40 seconds. Which means user have to hold their finder during that time.
+Remember that process of measurement lasts for 45 seconds. You can see the constant ```VITALS_PROCESS_DURATION``` which is stored in the SDK and equals 45 seconds. Which means user have to hold their finder during that time.
 ##### License key
 Bear in mind that license key will be rotated (it will be agreed with separately with your company). 
 There are few option to do it. Here are two just for example:
@@ -267,7 +267,7 @@ Debug release of SDK writes some outputs to logs so you can see if there are any
 ## Point of Contact for Support
 In case of any questions, please contact timur@re.doctor
 ## Version details
-Current version is 1.2.0 has a basic functionality to measure vitals & glucose including: 
+Current version is 1.3.0 has a basic functionality to measure vitals & glucose including: 
 
 1. Blood Oxygen
 2. Respiration Rate
