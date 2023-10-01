@@ -5,6 +5,7 @@ plugins {
 
 android {
     compileSdk = 33
+
     defaultConfig {
         applicationId = "com.tvs.android"
         minSdk = 24
@@ -53,5 +54,6 @@ dependencies {
     implementation("io.ktor:ktor-serialization-kotlinx-json:2.1.2")
 
     //SDK files
+    implementation("org.bitbucket.b_c:jose4j:0.7.8")
     implementation(fileTree("libs"))
 }

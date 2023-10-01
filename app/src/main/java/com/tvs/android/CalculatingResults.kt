@@ -8,10 +8,6 @@ import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
-import com.tvs.model.FramesDataAndroid
-import com.tvs.model.GlucoseLevelProcessorAndroid
-import com.tvs.utils.ProcessingStatus
-import com.tvs.vitals.VitalSignsProcessorNg
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -20,6 +16,11 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import android.util.Log
+
+import com.tvs.model.FramesDataAndroid
+import com.tvs.processor.ProcessingStatus
+import com.tvs.processor.GlucoseLevelProcessorAndroid
+import com.tvs.processor.VitalSignsProcessorNg
 
 class CalculatingResults : AppCompatActivity() {
 
@@ -90,6 +91,7 @@ class CalculatingResults : AppCompatActivity() {
             //-->
             val vitalsFrameData = getVitalsFrameData()
             val vitalsResult = vitalsProcessor.process(vitalsFrameData)
+
             if (vitalsResult == ProcessingStatus.FINISHED) {
                 bloodOxygen = vitalsProcessor.o2.value
                 heartRate = vitalsProcessor.Beats.value

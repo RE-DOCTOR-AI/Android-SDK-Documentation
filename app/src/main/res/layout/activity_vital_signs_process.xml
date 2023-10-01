@@ -36,11 +36,14 @@
             android:text=""
             android:textColor="@color/colorPrimaryDark"/>
 
-    <SurfaceView
-        android:id="@+id/preview"
-        android:layout_width="fill_parent"
-        android:layout_height="0dp"
-        android:layout_weight="0.5" />
+        <FrameLayout
+            android:id="@+id/container"
+            android:layout_width="fill_parent"
+            android:layout_height="0dp"
+            android:layout_weight="0.5"
+            android:background="@android:color/black"
+            tools:context="com.tvs.android.VitalSignsProcess">
+        </FrameLayout>
 
     <ProgressBar
         android:id="@+id/VSPB"
