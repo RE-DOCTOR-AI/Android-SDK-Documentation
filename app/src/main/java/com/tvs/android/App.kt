@@ -10,10 +10,12 @@ class App : Application() {
     override fun onCreate() {
         super.onCreate()
 
-        VitalsScannerSDK.withContext(this).initScanner(
-            "",
-            AndroidProvider(),
-        )
+        VitalsScannerSDK
+            .withContext(this)
+            .initScanner(
+                BuildConfig.ReRoctorLicenseKey,
+                AndroidProvider(),
+            )
     }
 
     companion object {

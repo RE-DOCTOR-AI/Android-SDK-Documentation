@@ -1,3 +1,6 @@
+import java.io.FileInputStream
+import java.util.Properties
+
 plugins {
     id("com.android.application")
     kotlin("android")
@@ -11,11 +14,24 @@ android {
         minSdk = 24
         targetSdk = 33
         versionCode = 3
-        versionName = "1.3.0(17)"
+        versionName = "1.4.0(1)"
 
         // Required when setting minSdkVersion to 20 or lower
         multiDexEnabled = true
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        val localProperties = Properties()
+        val localPropertiesFile = rootProject.file("local.properties")
+        if (localPropertiesFile.exists()) {
+            localProperties.load(FileInputStream(localPropertiesFile))
+
+            defaultConfig {
+                // Check for the property and add it if exists
+                localProperties["tvs.sdk.key"]?.let {
+                    buildConfigField("String", "ReRoctorLicenseKey", "\"$it\"")
+                }
+            }
+        }
     }
 
     buildTypes {
