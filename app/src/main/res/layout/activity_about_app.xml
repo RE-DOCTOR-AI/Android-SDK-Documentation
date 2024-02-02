@@ -12,21 +12,19 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:paddingStart="20dp"
-    android:paddingEnd="20dp"
+    android:paddingRight="20dp"
     android:paddingBottom="20dp"
     android:paddingTop="20dp"
     android:background="@mipmap/bg4"
     android:orientation="vertical"
     tools:context="com.tvs.android.AboutApp">
-
     <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="match_parent"
-        android:layout_height="228dp"
+        android:id="@+id/imageView4"
+        android:layout_width="238dp"
+        android:contentDescription="RE.DOCTOR logo"
         android:layout_gravity="center"
-        android:contentDescription="@string/Logo"
+        android:layout_height="228dp"
         app:srcCompat="@mipmap/logo" />
-
     <TextView
         android:id="@+id/textView9"
         android:layout_width="wrap_content"
@@ -34,7 +32,7 @@
         android:layout_gravity="center"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
-        android:text="This demo app shows how to work with the SDK.\nPlace your index finger on the rear camera so that it covers both camera and flash.\nMake sure the camera is fully covered.\nYou should be able to see some pulsation.\nMeasure in a shaded environment.\nDon't move your finger until the measurement is complete.\nFinally place your finger then press start."
+        android:text="Let's collect your vital signs, including:\n\n- Blood Oxygen\n- Heart Rate \n- Respiration Rate \n- Blood Pressure \n- Glucose level"
         android:textColor="@color/colorPrimaryDark"/>
     <LinearLayout
         android:layout_width="match_parent"
@@ -43,12 +41,12 @@
         android:gravity="center|bottom"
         android:orientation="vertical" >
     <Button
-        android:id="@+id/Start"
+        android:id="@+id/Next"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:backgroundTint="@color/colorButton"
-        android:contentDescription="Start"
-        android:text="Start"
+        android:contentDescription="Next"
+        android:text="Next"
         android:layout_marginTop="30dp"
         android:layout_marginBottom="10dp"
         android:textAllCaps="false" />
@@ -58,7 +56,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="8dp"
-        android:textColor="@color/black"/>
+        android:textColor="@color/colorPrimaryDark"/>
     </LinearLayout>
 </LinearLayout>
 </ScrollView>
