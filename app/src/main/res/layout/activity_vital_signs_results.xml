@@ -1,189 +1,423 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_gravity="top"
-    android:orientation="vertical"
-    android:fillViewport="true">
-<LinearLayout
-    android:id="@+id/activity_vital_signs_results"
-    android:background="@mipmap/bg4"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:paddingStart="20dp"
-    android:paddingTop="20dp"
-    android:paddingRight="20dp"
-    android:paddingBottom="20dp"
-    tools:context="com.tvs.android.CalculatingResultsResults">
+    android:fillViewport="true"
+    android:orientation="vertical">
 
     <LinearLayout
-        android:baselineAligned="true"
-        android:gravity="center"
-        android:layout_marginTop="15dp"
-        android:layout_width="fill_parent"
+        android:id="@+id/activity_vital_signs_results"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@mipmap/bg4"
         android:orientation="vertical"
-        tools:context="com.tvs.android.AboutApp">
-        <RelativeLayout
-            android:layout_width="wrap_content"
+        android:paddingStart="20dp"
+        android:paddingTop="20dp"
+        android:paddingEnd="20dp"
+        android:paddingBottom="20dp">
+
+        <LinearLayout
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="left"
-            android:layout_marginStart="20dp">
-            <TextView
-                android:id="@+id/O2V"
-                android:layout_width="wrap_content"
+            android:layout_marginTop="15dp"
+            android:baselineAligned="true"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <RelativeLayout
+                android:layout_width="361dp"
                 android:layout_height="wrap_content"
-                android:background="@android:color/transparent"
-                android:textColor="@color/colorPrimaryDark"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                tools:text="99"/>
-            <TextView
-                android:id="@+id/O2VText"
-                android:layout_width="wrap_content"
+                android:layout_gravity="left"
+                android:layout_marginStart="10dp">
+
+                <TextView
+                    android:id="@+id/O2V"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@android:color/transparent"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    tools:text="99" />
+
+                <TextView
+                    android:id="@+id/O2VText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="110dp"
+                    android:text="Blood Oxygen"
+                    android:textColor="@color/colorPrimaryDark" />
+
+                <EditText
+                    android:id="@+id/inputRealO2"
+                    style="@style/login_edit_text"
+                    android:layout_width="100dp"
+                    android:layout_height="20dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginTop="0dp"
+                    android:layout_marginEnd="0dp"
+                    android:inputType="number"
+                    android:textColor="@color/colorPrimaryDark" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="361dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="140dp"
-                android:text="Blood Oxygen"
-                android:textColor="@color/colorPrimaryDark"/>
-        </RelativeLayout>
-        <RelativeLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="left"
-            android:layout_marginStart="20dp"
-            android:layout_marginTop="20dp">
-            <TextView
-                android:id="@+id/HRV"
-                android:layout_width="wrap_content"
+                android:layout_gravity="left"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="20dp">
+
+                <TextView
+                    android:id="@+id/HRV"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@android:color/transparent"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    tools:text="76" />
+
+                <TextView
+                    android:id="@+id/HRVText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="110dp"
+                    android:text="Heart Rate"
+                    android:textColor="@color/colorPrimaryDark" />
+
+                <EditText
+                    android:id="@+id/inputRealHr"
+                    style="@style/login_edit_text"
+                    android:layout_width="100dp"
+                    android:layout_height="20dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginTop="0dp"
+                    android:layout_marginEnd="0dp"
+                    android:inputType="number"
+                    android:textColor="@color/colorPrimaryDark" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="360dp"
                 android:layout_height="wrap_content"
-                android:background="@android:color/transparent"
-                android:textColor="@color/colorPrimaryDark"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                tools:text="76" />
-            <TextView
-                android:id="@+id/HRVText"
-                android:layout_width="wrap_content"
+                android:layout_gravity="left"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="20dp">
+
+                <TextView
+                    android:id="@+id/RRV"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@android:color/transparent"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    tools:text="8" />
+
+                <TextView
+                    android:id="@+id/RRVText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="110dp"
+                    android:background="@android:color/transparent"
+                    android:text="Respiration Rate"
+                    android:textColor="@color/colorPrimaryDark" />
+
+                <EditText
+                    android:id="@+id/inputRealRR"
+                    style="@style/login_edit_text"
+                    android:layout_width="100dp"
+                    android:layout_height="20dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginTop="0dp"
+                    android:layout_marginEnd="0dp"
+                    android:inputType="number"
+                    android:textColor="@color/colorPrimaryDark" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="361dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="140dp"
-                android:text="Heart Rate"
-                android:textColor="@color/colorPrimaryDark"/>
-        </RelativeLayout>
-        <RelativeLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="left"
-            android:layout_marginTop="20dp"
-            android:layout_marginStart="20dp">
-            <TextView
-                android:id="@+id/RRV"
-                android:layout_width="wrap_content"
+                android:layout_gravity="left"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="20dp">
+
+                <EditText
+                    android:id="@+id/inputRealBp"
+                    style="@style/login_edit_text"
+                    android:layout_width="100dp"
+                    android:layout_height="20dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginTop="0dp"
+                    android:layout_marginEnd="0dp"
+                    android:inputType="text"
+                    android:textColor="@color/colorPrimaryDark" />
+
+                <TextView
+                    android:id="@+id/BP2V"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@android:color/transparent"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    tools:text="118 / 79" />
+
+                <TextView
+                    android:id="@+id/BP2VText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="110dp"
+                    android:text="Blood Pressure"
+                    android:textColor="@color/colorPrimaryDark" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="361dp"
                 android:layout_height="wrap_content"
-                android:background="@android:color/transparent"
-                android:textColor="@color/colorPrimaryDark"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                tools:text="8" />
-            <TextView
-                android:id="@+id/RRVText"
-                android:layout_width="wrap_content"
+                android:layout_gravity="left"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="20dp">
+
+                <TextView
+                    android:id="@+id/pulsePressure"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@android:color/transparent"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    tools:text="0" />
+
+                <TextView
+                    android:id="@+id/pulsePressureText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="110dp"
+                    android:text="Pulse Pressure"
+                    android:textColor="@color/colorPrimaryDark" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="361dp"
                 android:layout_height="wrap_content"
-                android:background="@android:color/transparent"
-                android:layout_marginStart="140dp"
-                android:text="Respiration Rate"
-                android:textColor="@color/colorPrimaryDark"/>
-        </RelativeLayout>
-        <RelativeLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="left"
-            android:layout_marginTop="20dp"
-            android:layout_marginStart="20dp">
+                android:layout_gravity="left"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="20dp">
+
+                <TextView
+                    android:id="@+id/stress"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@android:color/transparent"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    tools:text="0" />
+
+                <TextView
+                    android:id="@+id/stressText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="110dp"
+                    android:text="Stress"
+                    android:textColor="@color/colorPrimaryDark" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="361dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="20dp">
+
+                <TextView
+                    android:id="@+id/reflectionIndex"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@android:color/transparent"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    tools:text="0" />
+
+                <TextView
+                    android:id="@+id/reflectionIndexText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="110dp"
+                    android:text="Reflection Index"
+                    android:textColor="@color/colorPrimaryDark" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="361dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="20dp">
+
+                <TextView
+                    android:id="@+id/lasi"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@android:color/transparent"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    tools:text="0" />
+
+                <TextView
+                    android:id="@+id/lasiText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="110dp"
+                    android:text="LASI"
+                    android:textColor="@color/colorPrimaryDark" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="361dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="20dp">
+
+                <TextView
+                    android:id="@+id/hrv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@android:color/transparent"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    tools:text="0" />
+
+                <TextView
+                    android:id="@+id/hrvText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="110dp"
+                    android:text="HRV"
+                    android:textColor="@color/colorPrimaryDark" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="361dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="20dp">
+
+                <TextView
+                    android:id="@+id/GlucoseValue"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@android:color/transparent"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    tools:text="[57-72]" />
+
+                <TextView
+                    android:id="@+id/GlucoseText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="110dp"
+                    android:text="Glucose levels"
+                    android:textColor="@color/colorPrimaryDark" />
+
+                <EditText
+                    android:id="@+id/inputRealGlu"
+                    style="@style/login_edit_text"
+                    android:layout_width="100dp"
+                    android:layout_height="20dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginTop="0dp"
+                    android:layout_marginEnd="0dp"
+                    android:inputType="number"
+                    android:textColor="@color/colorPrimaryDark" />
+            </RelativeLayout>
 
             <TextView
-                android:id="@+id/BP2V"
-                android:layout_width="wrap_content"
+                android:id="@+id/RiskLevel"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:layout_marginLeft="7dp"
                 android:background="@android:color/transparent"
-                android:textColor="@color/colorPrimaryDark"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                tools:text="118 / 79"/>
-
-            <TextView
-                android:id="@+id/BP2VText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="140dp"
-                android:text="Blood Pressure"
+                android:text="Risk level: LOW"
                 android:textColor="@color/colorPrimaryDark" />
-        </RelativeLayout>
 
-        <RelativeLayout
-            android:layout_width="wrap_content"
+            <EditText
+                android:id="@+id/comment"
+                style="@style/input_field"
+                android:layout_width="match_parent"
+                android:layout_height="40pt"
+                android:layout_marginTop="20dp"
+                android:paddingStart="7dp"
+                android:paddingTop="7dp"
+                android:hint="@string/comment_placeholder"
+                android:maxLength="500"
+                android:lines="8"
+                android:gravity="top|start"
+                android:maxLines="10"
+                tools:text="Some comment about the measurement" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="left"
-            android:layout_marginStart="20dp"
-            android:layout_marginTop="20dp">
+            android:layout_marginTop="15dp"
+            android:baselineAligned="true"
+            android:gravity="center"
+            android:orientation="vertical">
 
             <TextView
-                android:id="@+id/GlucoseValue"
-                android:layout_width="wrap_content"
+                android:id="@+id/Disclaimer"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="@dimen/size_10dp"
                 android:background="@android:color/transparent"
-                android:textColor="@color/colorPrimaryDark"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                tools:text="[57-72]"/>
+                android:text="RE.DOCTOR does not diagnose, treat, mitigate or prevent any disease, symptom, disorder or abnormal physical state. Consult with a health care professional or emergency services if you believe you may have a medical issue."
+                android:textColor="@color/colorPrimaryDark" />
 
             <TextView
-                android:id="@+id/GlucoseText"
-                android:layout_width="wrap_content"
+                android:id="@+id/SiteLink"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="140dp"
-                android:text="Glucose levels"
+                android:autoLink="web"
+                android:background="@android:color/transparent"
+                android:text="Visit https://re.doctor to get more details."
                 android:textColor="@color/colorPrimaryDark" />
-        </RelativeLayout>
 
+            <Button
+                android:id="@+id/StartAgain"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="30dp"
+                android:layout_marginBottom="20dp"
+                android:backgroundTint="@color/colorButton"
+                android:contentDescription="Start again button"
+                android:text="Start again"
+                android:textAllCaps="false" />
+
+            <Button
+                android:id="@+id/CollectData"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginBottom="20dp"
+                android:backgroundTint="@color/colorButton"
+                android:contentDescription="Start again button"
+                android:text="Collect data"
+                android:textAllCaps="false" />
+
+        </LinearLayout>
     </LinearLayout>
-    <TextView
-        android:id="@+id/Disclaimer"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:background="@android:color/transparent"
-        android:text="RE.DOCTOR does not diagnose, treat, mitigate or prevent any disease, symptom, disorder or abnormal physical state. Consult with a health care professional or emergency services if you believe you may have a medical issue.
-"
-        android:textColor="@color/colorPrimaryDark" />
-    <TextView
-        android:id="@+id/SiteLink"
-        android:autoLink="web"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@android:color/transparent"
-        android:text="Visit https://re.doctor to get more details."
-        android:textColor="@color/colorPrimaryDark" />
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:gravity="center|bottom"
-        android:orientation="vertical">
-    <Button
-        android:id="@+id/StartAgain"
-        android:layout_width="fill_parent"
-        android:layout_gravity="center"
-        android:layout_height="wrap_content"
-        android:textAllCaps="false"
-        android:contentDescription="Start again button"
-        android:backgroundTint="@color/colorButton"
-        android:text="Start again"
-        android:layout_marginTop="30dp"
-        android:layout_marginBottom="30dp"/>
-    </LinearLayout>>
-</LinearLayout>
 </ScrollView>

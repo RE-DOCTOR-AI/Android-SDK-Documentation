@@ -4,4 +4,5 @@
     <string name="calculating_results_prompt">Calculating results, please wait…</string>
     <string name="not_enough_data">not enough data</string>
     <string name="processing">processing</string>
+    <string name="comment_placeholder">Enter comment for this measurement</string>
 </resources>

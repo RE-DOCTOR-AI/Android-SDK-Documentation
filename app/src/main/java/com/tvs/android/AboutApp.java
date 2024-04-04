@@ -17,23 +17,14 @@ import androidx.core.content.ContextCompat;
 public class AboutApp extends AppCompatActivity {
     private static final int CAMERA_PERMISSION_CODE = 100;
     private int p;
-    private SharedPreferences sharedPreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_about_app);
 
-        initVariables();//<-- SDK required
         addNextListeners();
     }
-
-    //SDK required: init variables
-    //-->
-    private void initVariables() {
-        sharedPreferences = getSharedPreferences(App.PREFS_KEY, MODE_PRIVATE);
-    }
-    //<--
 
     private void addNextListeners() {
         String versionName = BuildConfig.VERSION_NAME;

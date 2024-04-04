@@ -69,7 +69,7 @@ dependencies {
     implementation("io.ktor:ktor-client-content-negotiation:2.1.2")
     implementation("io.ktor:ktor-serialization-kotlinx-json:2.1.2")
 
-    //SDK files
+    //SDK dependencies
     implementation("org.bitbucket.b_c:jose4j:0.7.8")
     implementation(fileTree("libs"))
 }
