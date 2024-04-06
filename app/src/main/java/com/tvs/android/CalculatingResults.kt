@@ -94,7 +94,7 @@ class CalculatingResults : AppCompatActivity() {
      * results upon completion.
      */
     private suspend fun processData() {
-        /*
+        /**
          * Extract frames data from the intent
          */
         val vitalsFrameData = getVitalsFrameData()

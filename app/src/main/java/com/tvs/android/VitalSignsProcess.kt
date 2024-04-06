@@ -62,7 +62,7 @@ class VitalSignsProcess : AppCompatActivity(), ImageReader.OnImageAvailableListe
     }
 
     /**
-     * Creates camera fragment, sets it to the container and initializes frame consumer with camera preview size
+     * Creates camera fragment, adds it to the container and initializes frame consumer with camera preview size
      */
     private fun setFragment() {
         val manager = getSystemService(Context.CAMERA_SERVICE) as CameraManager
@@ -148,7 +148,7 @@ class VitalSignsProcess : AppCompatActivity(), ImageReader.OnImageAvailableListe
      * Handles the case when the consumption is finished and the processing should start
      */
     private fun onStartProcessing() {
-        //SDK required: passing frames data to SDK consumers
+        // SDK required: passing frames data to SDK consumers
         println("Collected frames. Start processing")
         val vitalsFrames = frameConsumer.getVitalsFramesData()
         val glucoseFrames = frameConsumer.getGlucoseFrameData()

@@ -1,8 +1,28 @@
 <resources>
-    <string name="app_name">RE.DOCTOR SDK Example app</string>
+    <string name="app_name">RE.DOCTOR Sample app</string>
     <string name="msg">Please enable all permission</string>
     <string name="calculating_results_prompt">Calculating results, please wait…</string>
-    <string name="not_enough_data">not enough data</string>
+    <string name="login_description">Please enter your data so that vitals signs can be calculated and your data can be sent to your healthcare provider.</string>
+    <string name="first_name">First Name</string>
+    <string name="last_name">Last Name</string>
+    <string name="height_cm">Height (cm)</string>
+    <string name="weight_kg">Weight (kg)</string>
+    <string name="date_of_birth">Date of birth</string>
+    <string name="age_years">Age (years)</string>
+    <string name="gender">Gender</string>
+    <string name="male">Male</string>
+    <string name="female">Female</string>
+    <string name="next">Next</string>
+    <string name="measurement">Measurement</string>
+    <string name="imperial">Imperial</string>
+    <string name="metric">Metric</string>
+    <string name="height_ft">Height (ft)</string>
+    <string name="weight_lb">Weight (lb)</string>
+    <string name="not_valid_height">Please enter your valid Height. Accepted values are</string>
+    <string name="not_valid_weight">Please enter your valid Weight. Accepted values are</string>
+    <string name="not_valid_age">Please enter your valid Age. Accepted values are 18–120 years</string>
+    <string name="not_valid_name">Please enter a valid first name. It should be at least 2 characters long</string>
+    <string name="not_enough_data">N/A</string>
     <string name="processing">processing</string>
     <string name="comment_placeholder">Enter comment for this measurement</string>
 </resources>

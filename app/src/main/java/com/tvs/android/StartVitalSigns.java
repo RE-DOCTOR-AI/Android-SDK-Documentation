@@ -14,7 +14,6 @@ public class StartVitalSigns extends AppCompatActivity {
 
         findViewById(R.id.StartVS).setOnClickListener(v -> {
             Intent intent = new Intent(v.getContext(), VitalSignsProcess.class);
-            System.out.println("VitalSignsProcess started");
             startActivity(intent);
             finish();
         });
