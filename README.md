@@ -12,12 +12,12 @@ SDK requires at least 45 seconds of camera and flash to be on to capture video w
 2. Get the latest SDK archive and license key from the RE.DOCTOR team
 3. Place the .aar archive in the `app/libs` folder of the project
 4. Add the license key to the `<root>/local.properties` file under the key ```tvs.sdk.key=<your.license.key>```
-
+5. Run ./gradlew build to build the project
 
 ### Integrating SDK to your application
 
 #### Installing SDK
-1. To install the SDK move the VitalsSDK.aar archive into a lib folder in your project directory: ```<Android app root folder>/libs/```
+1. To install the SDK move the VitalsSDK.aar archive into a lib folder in your project directory: `<root>/app/libs/`
 <img width="354" alt="image" src="https://user-images.githubusercontent.com/125552714/230612751-339f8bf3-f24a-4e75-9538-d1ff6585b8a3.png">
 2. Add it as a local dependency into your build.gradle file for your Android app
  
@@ -34,6 +34,7 @@ dependencies {
 
 
 #### License key
+Request a license key from the RE.DOCTOR team.
 Bear in mind that license key has expiration date (it will be agreed on separately with your company).
 There are few option to do it. Here are two just for example:
 1. Keep it inside the app, but before the license expiration date you will have to update your application on the devices to keep functionality working.
