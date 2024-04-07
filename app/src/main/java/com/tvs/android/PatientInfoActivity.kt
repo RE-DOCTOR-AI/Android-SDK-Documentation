@@ -69,7 +69,7 @@ class PatientInfoActivity : AppCompatActivity() {
             personData
             addMeasureSwitchListener()
             addGenderSwitchListener()
-            addLoginListeners()
+            addButtonListeners()
             addDoBListener()
         } catch (e: Exception) {
             e.printStackTrace()
@@ -119,6 +119,8 @@ class PatientInfoActivity : AppCompatActivity() {
         val imperialState = userInfo.useImperial
         measure!!.setChecked(imperialState)
         animateTextForSwitcher(imperialState, metric, imperial)
+
+        setUnitLabels(imperialState)
     }
 
     private fun addGenderSwitchListener() {
@@ -180,17 +182,19 @@ class PatientInfoActivity : AppCompatActivity() {
 
     private fun addMeasureSwitchListener() {
         measure!!.setOnCheckedChangeListener { _: CompoundButton?, isImperial: Boolean ->
-            if (isImperial) {
-                animateTextForSwitcher(true, metric, imperial)
-                heightText?.setText(R.string.height_ft)
-                weightText?.setText(R.string.weight_lb)
-                switchMeasure(true)
-            } else {
-                animateTextForSwitcher(false, metric, imperial)
-                heightText?.setText(R.string.height_cm)
-                weightText?.setText(R.string.weight_kg)
-                switchMeasure(false)
-            }
+            animateTextForSwitcher(isImperial, metric, imperial)
+            setUnitLabels(isImperial)
+            switchMeasure(isImperial)
+        }
+    }
+
+    private fun setUnitLabels(isImperial: Boolean) {
+        if (isImperial) {
+            heightText?.setText(R.string.height_ft)
+            weightText?.setText(R.string.weight_lb)
+        } else {
+            heightText?.setText(R.string.height_cm)
+            weightText?.setText(R.string.weight_kg)
         }
     }
 
@@ -245,10 +249,10 @@ class PatientInfoActivity : AppCompatActivity() {
         return metricWeight
     }
 
-    private fun addLoginListeners() {
+    private fun addButtonListeners() {
         nextButton!!.setOnClickListener { v: View ->
             val intent = Intent(v.context, StartVitalSigns::class.java)
-            if (isUserDataValidate(measure!!.isChecked)) {
+            if (isUserDataValid(measure!!.isChecked)) {
                 val userInfo = UserInfo(
                     firstName!!.getText().toString().trim { it <= ' ' },
                     lastName!!.getText().toString().trim { it <= ' ' },
@@ -276,7 +280,7 @@ class PatientInfoActivity : AppCompatActivity() {
         return String.format(Locale.US, "%.2f", metricValue)
     }
 
-    private fun isUserDataValidate(metric: Boolean): Boolean {
+    private fun isUserDataValid(metric: Boolean): Boolean {
         val isValidName = checkNames()
         val isValidHeight =
             checkHeightField(metric, height!!.getText().toString().trim { it <= ' ' })
