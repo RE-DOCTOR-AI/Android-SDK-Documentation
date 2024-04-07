@@ -5,8 +5,19 @@ The SDK accepts a few parameters as input. It also requires to have some end use
 SDK requires at least 45 seconds of camera and flash to be on to capture video which is converted to RGB array on the fly which allows to make calculations of Vitals and Glucose.
 
 ## Tutorials
-### Installing
-1. To install the SDK move the VitalsSDK.aar files into a lib folder in your project directory: ```<Android app root folder>/libs/```
+
+### Running this demo application
+
+1. Clone this repository
+2. Get the latest SDK archive and license key from the RE.DOCTOR team
+3. Place the .aar archive in the `app/libs` folder of the project
+4. Add the license key to the `<root>/local.properties` file under the key ```tvs.sdk.key=<your.license.key>```
+
+
+### Integrating SDK to your application
+
+#### Installing SDK
+1. To install the SDK move the VitalsSDK.aar archive into a lib folder in your project directory: ```<Android app root folder>/libs/```
 <img width="354" alt="image" src="https://user-images.githubusercontent.com/125552714/230612751-339f8bf3-f24a-4e75-9538-d1ff6585b8a3.png">
 2. Add it as a local dependency into your build.gradle file for your Android app
  
@@ -21,8 +32,6 @@ dependencies {
 ```
 <img width="670" alt="image" src="https://user-images.githubusercontent.com/125552714/230612913-ddd48a12-26d7-4d4a-a233-2e4942b8ed55.png">
 
-### Using
-You can download this repo and request for the latest SDK archive so that you can check how the integration is working.
 
 #### License key
 Bear in mind that license key has expiration date (it will be agreed on separately with your company).
@@ -204,57 +213,65 @@ private fun onStartProcessing() {
 }
 ```
 
-6. On file CalculatingResults you can see the code which works asynchronously
+6. In `CalculatingResults` activity kick off data processing using the passed frames data in `onCreate()` method.
+It is important to run the computations asynchronously in a coroutine to avoid blocking the UI thread.
+See for details https://github.com/RE-DOCTOR-AI/Android-SDK-Documentation/blob/main/app/src/main/java/com/tvs/android/CalculatingResults.kt#L81
 
 ```kotlin
-    ...
-        //SDK required: vitals and glucose processors
-        //-->
-        val glucoseLevelProcessor = GlucoseLevelProcessorAndroid()
-        val vitalsProcessor = VitalSignsProcessorNg(this.getUserParameters())
-        //<--
 
-        //flag to keep screen on because glucose calculation can take up to two minutes
-        window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+override fun onCreate() {
+    lifecycleScope.launch(Dispatchers.Default) {
+        processData()
+    }
+}
 
-        glucoseJob = lifecycleScope.launch {
-            startGlucoseLoadingAnimation().collect { text ->
-                glucoseLevelField.text = text
-                startVitalsLoadingAnimation(text)
+private suspend fun processData() {
+    /**
+     * Extract frames data from the intent
+     */
+    val vitalsFrameData = getVitalsFrameData()
+    val glucoseFrameData = getGlucoseFrameData()
+
+    /* Run data processing in coroutine */
+    lifecycleScope.launch(Dispatchers.Main) {
+        /**
+         * Separate job for calculating vitals
+         */
+        val vitalsJob = async(Dispatchers.Default) {
+            vitalsProcessResult = vitalsProcessor.process(vitalsFrameData)
+
+            // Computation finished successfully
+            if (vitalsProcessResult == ProcessingStatus.FINISHED) {
+                // Read vitals values from the processor
+                heartRate = vitalsProcessor.getHeartRate()
+                bloodPressure = vitalsProcessor.getBloodPressure()
+                respirationRate = vitalsProcessor.getRespirationRate()
+                bloodOxygen = vitalsProcessor.getBloodOxygen()
+                riskLevel = getRiskLevel(vitalsProcessor.riskLevel.value)
+            } else {
+                // process failed computation
             }
         }
+        vitalsJob.await() // wait for completion
+        showVitals() // show computation results
 
-
-        lifecycleScope.launch(Dispatchers.Default)  {
-            //SDK required: Here we wait till glucose is calculated and show results
-            //-->
-            val glucoseFrameData = getGlucoseFrameData()
+        /**
+         * Separate job for calculating glucose
+         */
+        val glucoseJob = async(Dispatchers.Default) {
             val glucoseResult = glucoseLevelProcessor.process(glucoseFrameData)
+
             if (glucoseResult == ProcessingStatus.FINISHED) {
-                glucoseJob?.cancel()
+                glucoseAnimationJob.cancel() // Stop the animation on completion
+                // Read glucose values from the processor
                 glucoseLevelMax = glucoseLevelProcessor.getGlucoseMaxValue()
                 glucoseLevelMin = glucoseLevelProcessor.getGlucoseMinValue()
             }
-            showGlucose()
-            withContext(Dispatchers.Main) { blockingButtons(true) }
-            //<--
         }
-
-        lifecycleScope.launch(Dispatchers.Default) {
-            //SDK required: here we wait till vitals calculated and show them
-            //-->
-            val vitalsFrameData = getVitalsFrameData()
-            val vitalsResult = vitalsProcessor.process(vitalsFrameData)
-            if (vitalsResult == ProcessingStatus.FINISHED) {
-                bloodOxygen = vitalsProcessor.o2.value
-                heartRate = vitalsProcessor.Beats.value
-                respirationRate = vitalsProcessor.Breath.value
-                systolicBloodPressure = vitalsProcessor.SP.value
-                diastolicBloodPressure = vitalsProcessor.DP.value
-            }
-            showVitals()
-            //<--
-        ...
+        glucoseJob.await() // wait for completion
+        showGlucose() // show computation results
+    }
+}
 ```
 
 #### Keep in mind
@@ -269,14 +286,16 @@ You can see it here https://github.com/RE-DOCTOR-AI/Android-SDK-Documentation/bl
 In case you have imperial measurement system in your apps you can convert that data to metric as we’re doing in our sample apps.
 ```kotlin
     intent.putExtra("userParams", UserParameters(
-        height = 180.0,//cm
-        weight = 74.0,//kg
-        age = 39,//years
-        gen = 1//1:male, 2: female
+        height = 180.0, //cm
+        weight = 74.0, //kg
+        age = 39, //years
+        gen = 1 //1:male, 2: female
     ))
 ```
 ##### Process duration
-Remember that process of measurement lasts for 45 seconds. You can see the constant ```VITALS_PROCESS_DURATION``` which is stored in the SDK and equals 45 seconds. Which means user have to hold their finder during that time.
+Remember that process of collecting and preprocessing frames lasts for about 30 seconds. 
+You can see the constant ```MEASUREMENT_COUNT``` which is stored in the SDK and equals 900 frames.
+Given the video frame rate of 30 fps it will take 30 seconds to collect all the frames.
 
 ##### Internet connection
 SDK requires periodical internet connection in order to send logs to the server. It's recommended to use it while connected to interned at least once in a few days.
