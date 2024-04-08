@@ -13,8 +13,8 @@ android {
         applicationId = "com.tvs.android"
         minSdk = 24
         targetSdk = 33
-        versionCode = 3
-        versionName = "1.4.0(1)"
+        versionCode = 21
+        versionName = "1.5.0(21)"
 
         // Required when setting minSdkVersion to 20 or lower
         multiDexEnabled = true

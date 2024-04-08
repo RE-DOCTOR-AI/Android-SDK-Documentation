@@ -248,7 +248,6 @@ private suspend fun processData() {
                 bloodPressure = vitalsProcessor.getBloodPressure()
                 respirationRate = vitalsProcessor.getRespirationRate()
                 bloodOxygen = vitalsProcessor.getBloodOxygen()
-                riskLevel = getRiskLevel(vitalsProcessor.riskLevel.value)
             } else {
                 // process failed computation
             }
