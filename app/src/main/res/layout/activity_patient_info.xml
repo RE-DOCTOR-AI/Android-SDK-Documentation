@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@mipmap/bg4"
+    tools:context="com.tvs.android.PatientInfoActivity">
+
+    <TextView
+        android:id="@+id/disclaimer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/size_20dp"
+        android:layout_marginStart="@dimen/size_20dp"
+        android:layout_marginEnd="@dimen/size_20dp"
+        android:text="@string/login_description"
+        android:textColor="@color/colorPrimaryDark"
+        android:textSize="@dimen/body_1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.55" />
+
+    <EditText
+        android:id="@+id/first_name_value"
+        style="@style/login_edit_text"
+        android:layout_marginTop="@dimen/size_30dp"
+        android:inputType="textPersonName|textCapSentences"
+        app:layout_constraintEnd_toStartOf="@id/guideline"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/disclaimer"
+        app:layout_constraintBottom_toTopOf="@id/last_name_value"
+        app:layout_constraintHorizontal_chainStyle="spread"
+        tools:text="Daniel" />
+    <TextView android:id="@+id/first_name"
+        style="@style/login_text"
+        android:text="@string/first_name"
+        app:layout_constraintBottom_toBottomOf="@id/first_name_value"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@id/guideline"
+        app:layout_constraintTop_toTopOf="@id/first_name_value" />
+
+    <EditText
+        android:id="@+id/last_name_value"
+        style="@style/login_edit_text"
+        android:inputType="textPersonName|textCapSentences"
+        app:layout_constraintEnd_toStartOf="@id/guideline"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/first_name_value"
+        app:layout_constraintBottom_toTopOf="@id/height"
+        tools:text="Jackson" />
+    <TextView
+        style="@style/login_text"
+        android:text="@string/last_name"
+        app:layout_constraintBottom_toBottomOf="@id/last_name_value"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@id/guideline"
+        app:layout_constraintTop_toTopOf="@id/last_name_value" />
+
+    <EditText
+        android:id="@+id/height"
+        style="@style/login_edit_text"
+        android:inputType="numberDecimal"
+        app:layout_constraintEnd_toStartOf="@id/guideline"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/last_name_value"
+        app:layout_constraintBottom_toTopOf="@id/weight"
+        tools:text="190" />
+    <TextView
+        android:id="@+id/height_text"
+        style="@style/login_text"
+        android:text="@string/height_cm"
+        app:layout_constraintBottom_toBottomOf="@id/height"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@id/guideline"
+        app:layout_constraintTop_toTopOf="@id/height" />
+
+    <EditText
+        android:id="@+id/weight"
+        style="@style/login_edit_text"
+        android:inputType="numberDecimal"
+        app:layout_constraintEnd_toStartOf="@id/guideline"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/height"
+        app:layout_constraintBottom_toTopOf="@id/dob"
+        tools:text="82" />
+    <TextView
+        android:id="@+id/weight_text"
+        style="@style/login_text"
+        android:text="@string/weight_kg"
+        app:layout_constraintBottom_toBottomOf="@id/weight"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@id/guideline"
+        app:layout_constraintTop_toTopOf="@+id/weight" />
+
+    <EditText
+        android:id="@+id/dob"
+        style="@style/login_edit_text"
+        android:inputType="date"
+        app:layout_constraintEnd_toStartOf="@id/guideline"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/weight"
+        app:layout_constraintBottom_toTopOf="@id/age"
+        tools:text="05.04.1986"/>
+    <TextView
+        style="@style/login_text"
+        android:text="@string/date_of_birth"
+        app:layout_constraintBottom_toBottomOf="@id/dob"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@id/guideline"
+        app:layout_constraintTop_toTopOf="@id/dob"/>
+
+    <EditText
+        android:id="@+id/age"
+        style="@style/login_edit_text"
+        android:inputType="number"
+        android:enabled="false"
+        app:layout_constraintEnd_toStartOf="@id/guideline"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/dob"
+        app:layout_constraintBottom_toTopOf="@id/gender_switch"
+        tools:text="37"
+        android:autofillHints="none" />
+    <TextView
+        style="@style/login_text"
+        android:text="@string/age_years"
+        app:layout_constraintBottom_toBottomOf="@id/age"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@id/guideline"
+        app:layout_constraintTop_toTopOf="@id/age"/>
+
+    <androidx.appcompat.widget.SwitchCompat
+        android:id="@+id/gender_switch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/size_30dp"
+        android:layout_marginTop="@dimen/size_20dp"
+        app:track="@drawable/switch_track"
+        android:thumb="@drawable/switch_thumb"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/age"
+        app:layout_constraintBottom_toTopOf="@id/useImperial"/>
+    <TextView
+        android:id="@+id/male"
+        style="@style/switcher_text"
+        app:layout_constraintBottom_toBottomOf="@id/gender_switch"
+        app:layout_constraintStart_toStartOf="@id/gender_switch"
+        app:layout_constraintEnd_toStartOf="@id/female"
+        app:layout_constraintTop_toTopOf="@id/gender_switch"
+        app:layout_constraintHorizontal_weight="1"
+        android:text="@string/male"/>
+    <TextView
+        android:id="@+id/female"
+        style="@style/switcher_text"
+        app:layout_constraintBottom_toBottomOf="@id/gender_switch"
+        app:layout_constraintStart_toEndOf="@id/male"
+        app:layout_constraintEnd_toEndOf="@id/gender_switch"
+        app:layout_constraintTop_toTopOf="@id/gender_switch"
+        app:layout_constraintHorizontal_weight="1"
+        android:text="@string/female"
+        tools:visibility="visible"/>
+    <TextView
+        android:id="@+id/gender_text"
+        style="@style/login_text"
+        android:text="@string/gender"
+        app:layout_constraintBottom_toBottomOf="@id/gender_switch"
+        app:layout_constraintStart_toEndOf="@id/guideline"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/gender_switch"/>
+
+    <androidx.appcompat.widget.SwitchCompat
+        android:id="@+id/useImperial"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/size_30dp"
+        android:layout_marginTop="@dimen/size_20dp"
+        android:thumb="@drawable/switch_thumb"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/gender_switch"
+        app:track="@drawable/switch_track" />
+    <TextView
+        android:id="@+id/metric"
+        style="@style/switcher_text"
+        android:text="@string/metric"
+        app:layout_constraintBottom_toBottomOf="@id/useImperial"
+        app:layout_constraintStart_toStartOf="@id/useImperial"
+        app:layout_constraintEnd_toStartOf="@id/imperial"
+        app:layout_constraintTop_toTopOf="@id/useImperial"
+        app:layout_constraintHorizontal_weight="1" />
+    <TextView
+        android:id="@+id/imperial"
+        style="@style/switcher_text"
+        android:text="@string/imperial"
+        app:layout_constraintBottom_toBottomOf="@id/useImperial"
+        app:layout_constraintStart_toEndOf="@id/metric"
+        app:layout_constraintEnd_toEndOf="@id/useImperial"
+        app:layout_constraintTop_toTopOf="@id/useImperial"
+        app:layout_constraintHorizontal_weight="1"
+        android:alpha="0.0"/>
+    <TextView
+        style="@style/login_text"
+        android:text="@string/measurement"
+        app:layout_constraintStart_toEndOf="@id/guideline"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/useImperial"
+        app:layout_constraintBottom_toBottomOf="@id/useImperial"/>
+
+    <Button
+        android:id="@+id/next_btn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/size_20dp"
+        android:layout_marginEnd="@dimen/size_20dp"
+        android:layout_marginBottom="@dimen/size_20dp"
+        android:backgroundTint="@color/colorButton"
+        android:contentDescription="@string/next"
+        android:text="@string/next"
+        android:textAllCaps="false"
+        app:layout_constraintVertical_bias="0.3"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/useImperial"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+

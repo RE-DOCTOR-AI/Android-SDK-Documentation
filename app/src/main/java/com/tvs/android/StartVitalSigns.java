@@ -2,6 +2,7 @@ package com.tvs.android;
 
 import android.content.Intent;
 import android.os.Bundle;
+
 import androidx.appcompat.app.AppCompatActivity;
 
 public class StartVitalSigns extends AppCompatActivity {
@@ -13,10 +14,8 @@ public class StartVitalSigns extends AppCompatActivity {
 
         findViewById(R.id.StartVS).setOnClickListener(v -> {
             Intent intent = new Intent(v.getContext(), VitalSignsProcess.class);
-            System.out.println("VitalSignsProcess started");
             startActivity(intent);
             finish();
-
         });
     }
 

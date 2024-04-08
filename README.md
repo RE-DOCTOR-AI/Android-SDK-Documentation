@@ -5,24 +5,70 @@ The SDK accepts a few parameters as input. It also requires to have some end use
 SDK requires at least 45 seconds of camera and flash to be on to capture video which is converted to RGB array on the fly which allows to make calculations of Vitals and Glucose.
 
 ## Tutorials
-### Installing
-1. To install the SDK move the VitalsSDK.aar and ksp.jar files into a lib folder in your project directory: ```<Android app root folder>/libs/```
+
+### Running this demo application
+
+1. Clone this repository
+2. Get the latest SDK archive and license key from the RE.DOCTOR team
+3. Place the .aar archive in the `app/libs` folder of the project
+4. Add the license key to the `<root>/local.properties` file under the key ```tvs.sdk.key=<your.license.key>```
+5. Run ./gradlew build to build the project
+
+### Integrating SDK to your application
+
+#### Installing SDK
+1. To install the SDK move the VitalsSDK.aar archive into a lib folder in your project directory: `<root>/app/libs/`
 <img width="354" alt="image" src="https://user-images.githubusercontent.com/125552714/230612751-339f8bf3-f24a-4e75-9538-d1ff6585b8a3.png">
 2. Add it as a local dependency into your build.gradle file for your Android app
  
 ```gradle 
 dependencies {
+    /** Other depdencies */
     
-    //SDK files
-    implementation(fileTree("libs"))
+    // SDK files
+    implementation(fileTree("libs")) // include all files from libs folder
+    implementation("org.bitbucket.b_c:jose4j:0.7.8") // transient dependency that is not packaged in aar package
 }  
 ```
 <img width="670" alt="image" src="https://user-images.githubusercontent.com/125552714/230612913-ddd48a12-26d7-4d4a-a233-2e4942b8ed55.png">
 
-### Using
-You can downlad this repo and request for a demo SDK file so that you can check how the integration is working.
+
+#### License key
+Request a license key from the RE.DOCTOR team.
+Bear in mind that license key has expiration date (it will be agreed on separately with your company).
+There are few option to do it. Here are two just for example:
+1. Keep it inside the app, but before the license expiration date you will have to update your application on the devices to keep functionality working.
+2. Keep it outside of your app and request it from your server. This way you can update the key without updating the app.
+
+This demo app is using the first approach and is configured to read license key from the properties file using key `tvs.sdk.key` and store it in the generated BuildConfig class.
+When building this app, put your license key in local.properties file
+```
+tvs.sdk.key=xyz
+```
+
+#### Initializing SDK
+In your Android app you should initialize the SDK with the following code to start using its functionality:
+```kotlin
+import com.tvs.VitalsScannerSDK
+
+VitalsScannerSDK
+    .withContext(this)
+    .withDataCollection() // Enables collection of real and inferred data along with PPG signal
+    .withValidation("loose") // Possible values: "strict" and "loose". Sets appropriate validation thresholds.
+    .initScanner(
+        licenseKey = BuildConfig.ReRoctorLicenseKey, // Pass the license key
+        userParametersProvider = AndroidProvider() // Object that provides user parameters, such as height, weight, age
+    )
+```
+See https://github.com/RE-DOCTOR-AI/Android-SDK-Documentation/blob/main/app/src/main/java/com/tvs/android/App.kt for details
+
+Implement `UserParametersProvider` interface to provide user parameters to the SDK. 
+This demo app uses local storage to store and load user parameters.
+See https://github.com/RE-DOCTOR-AI/Android-SDK-Documentation/blob/main/app/src/main/java/com/tvs/android/AndroidProvider.kt for details
+
+
 #### Prepare data and call SDK functions
-Here is an example on how to use it. Please remember that you need to work with Android camera and create a special class/classes where you can prepare data for SDK and receive results from it.
+Here is an example on how to use it. Please remember that you need to work with Android camera API and create a special class/classes to provide a stream of frames to SDK consumer.
 1. Add these configuration to access camera to your AndroidManifest file in resource folder. You can find it here https://github.com/RE-DOCTOR-AI/Android-SDK-Documentation/blob/main/app/src/main/AndroidManifest.xml
 ```XML 
     <uses-permission android:name="android.permission.CAMERA" />
@@ -38,201 +84,195 @@ Here is an example on how to use it. Please remember that you need to work with 
     <uses-permission android:name="android.permission.INTERNET" />
 ```
 
-2. Add the following functions and call them before you start working with camera so that you don't need to manually set up camera permissions for your app. You can see how it's done here https://github.com/RE-DOCTOR-AI/Android-SDK-Documentation/blob/main/app/src/main/java/tvs/sdk/AboutApp.kt#L44
+2. Add the following function and call it before you start working with camera so that you don't need to manually set up camera permissions for your app. You can see how it's done here https://github.com/RE-DOCTOR-AI/Android-SDK-Documentation/blob/main/app/src/main/java/tvs/sdk/AboutApp.kt#L22
 ```kotlin 
     // Function to check and request permission.
-    public void checkPermission(String permission, int requestCode) {
-        if (ContextCompat.checkSelfPermission(this, permission) == PackageManager.PERMISSION_DENIED) {
-            ActivityCompat.requestPermissions(this, new String[]{permission}, requestCode);
-
+    fun checkPermission() {
+        val isDenied = ContextCompat.checkSelfPermission(
+            this,
+            Manifest.permission.CAMERA
+        ) == PackageManager.PERMISSION_DENIED
+    
+        if (isDenied) {
             // Requesting the permission
-            ActivityCompat.requestPermissions(this, new String[]{permission}, requestCode);
+            ActivityCompat.requestPermissions(
+                this,
+                arrayOf(Manifest.permission.CAMERA),
+                CAMERA_PERMISSION_CODE
+            )
         }
-    }   
+    }
 ```
 
-3. In your codebase with android components you should implement class extends AppCompatActivity which opens camera and process images in onPreviewFrame method. The complete code can be found here https://github.com/RE-DOCTOR-AI/Android-SDK-Documentation/blob/main/app/src/main/java/tvs/sdk/MainActivity.kt
-```kotlin 
-class VitalSignsProcess : AppCompatActivity() {
-    private var preview: SurfaceView? = null
+3. In order to consume video stream from the camera and forward it to ReDoctor library for processing,
+you should create an activity that extends AppCompatActivity and ImageReader.OnImageAvailableListener. 
+The activity should create a fragment with video preview in its onCreate() lifecycle method.
+Upon creation of preview fragment create, you need to create an instance of `DefaultFrameConsumerAndroid` that is responsible for consuming and processing frames from the camera. 
+The constructor expects the width and height of the camera preview to correctly process the incoming frames.
 
-    //SDK required: This to vars are required to pass frames data to SDK
-    private lateinit var vitalsFrameConsumer: ImageFrameConsumerAndroid
-    private lateinit var glucoseFrameConsumer: ImageFrameConsumerAndroid
-
-
-    private var mainToast: Toast? = null
-
-    //ProgressBar
-    private var progBar: ProgressBar? = null
-    var progP = 0
-    var inc = 0
-
+```kotlin
+class VitalSignsProcess : AppCompatActivity(), ImageReader.OnImageAvailableListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_vital_signs_process)
-
-        //SDK required: Creating frames consumers so that SDK can get frames and process data
-        vitalsFrameConsumer = ImageFrameConsumerAndroid(900)
-        glucoseFrameConsumer = ImageFrameConsumerAndroid(600)
-
-        // XML - Java Connecting
-        preview = findViewById(R.id.preview)
-        previewHolder = preview!!.holder
-        previewHolder!!.addCallback(surfaceCallback)
-        previewHolder!!.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS)
-        progBar = findViewById(R.id.VSPB)
-        progBar!!.progress = 0
-
-        // WakeLock Initialization : Forces the phone to stay On
-        val pm: PowerManager = getSystemService(Context.POWER_SERVICE) as PowerManager
-        wakeLock = pm.newWakeLock(PowerManager.FULL_WAKE_LOCK, "tvs:DoNotDimScreen")
+        ...
+        setFragment()
     }
-    
-    ...
-}    
-      
-```
 
-4. In that class you should also implement  ```onPreviewFrame``` function which will allow you to pass data to SDK and get statuses
-```
-        //SDK required: function which runs for each frame captured by camera
-        //-->
-        override fun onPreviewFrame(data: ByteArray, cam: Camera) {
-            val size = cam.parameters.previewSize ?: throw NullPointerException()
+    private fun setFragment() {
+        val manager = getSystemService(Context.CAMERA_SERVICE) as CameraManager
+        val cameraId = manager.cameraIdList[0]
 
-            val width = size.width
-            val height = size.height
+        manager.setTorchMode(cameraId, true)
 
-            val vitalsFrameResult = vitalsFrameConsumer.ingest(data, width, height)
-            val glucoseFrameResult = glucoseFrameConsumer.ingest(data, width, height)
+        val camera2Fragment = CameraConnectionFragment.newInstance(
+            { size, rotation ->
+                previewHeight = size.height
+                previewWidth = size.width
+                sensorOrientation = rotation - getScreenOrientation()
+                frameConsumer = DefaultFrameConsumerAndroid( // instantiating the frame consumer
+                    previewWidth,
+                    previewHeight
+                ) // object for data ingestion
+            },
+            this,
+            R.layout.camera_fragment,
+            Size(640, 480)
+        )
 
-            if (
-                vitalsFrameResult == ProcessStatus.RED_INTENSITY_NOT_ENOUGH
-                || glucoseFrameResult == ProcessStatus.RED_INTENSITY_NOT_ENOUGH
-            ) {
-                onLowIntensity()
-            } else if (
-                vitalsFrameResult == ProcessStatus.MEASUREMENT_FAILED
-                || glucoseFrameResult == ProcessStatus.MEASUREMENT_FAILED
-            ) {
-                onConsumptionFailure()
-            } else if (vitalsFrameResult == ProcessStatus.IN_PROGRESS
-                || glucoseFrameResult == ProcessStatus.IN_PROGRESS
-            ) {
-                onProgress()
-            } else if (vitalsFrameResult == ProcessStatus.START_CALCULATING
-                && glucoseFrameResult == ProcessStatus.START_CALCULATING
-            ) {
-                //that is the new status required as Glucose calculation takes time and we need to process is
-                onStartProcessing()
-            } else if (vitalsFrameResult == ProcessStatus.NEED_MORE_IMAGES
-                || glucoseFrameResult == ProcessStatus.NEED_MORE_IMAGES
-            ) {
-                onMoreImages()
-            }
-        }
+        camera2Fragment.setCamera(cameraId)
+        fragmentManager.beginTransaction().replace(R.id.container, camera2Fragment).commit()
     }
-    //<--
+}
 ```
+The complete code can be found here https://github.com/RE-DOCTOR-AI/Android-SDK-Documentation/blob/main/app/src/main/java/com/tvs/android/VitalSignsProcess.kt#L43
+For the details of camera preview fragment class refer to https://github.com/RE-DOCTOR-AI/Android-SDK-Documentation/blob/main/app/src/main/java/com/tvs/android/camera/CameraConnectionFragment.kt
 
-5. You can find the full class implementation here https://github.com/RE-DOCTOR-AI/Android-SDK-Documentation/blob/main/app/src/main/java/tvs/sdk/MainActivity.kt
-6. You should implement one class to pass to SDK end user parameters (Age, Height, Weight, etc.). See it here: https://github.com/RE-DOCTOR-AI/Android-SDK-Documentation/blob/1.3.0/app/src/main/java/com/tvs/android/AndroidProvider.kt
-7. You should implement one class to put license key to SDK. See it here: https://github.com/RE-DOCTOR-AI/Android-SDK-Documentation/blob/1.3.0/app/src/main/java/com/tvs/android/App.kt
+4. The same activity should implement  ```onImageAvailable(reader: ImageReader)``` method which will allow you 
+to pass each frame of the video stream to SDK consumer.
+```kotlin
+override fun onImageAvailable(reader: ImageReader) {
+    val image = reader.acquireLatestImage() ?: return
+    this.onResult(frameConsumer.offer(image, frameNumber))
+}
+```
+See https://github.com/RE-DOCTOR-AI/Android-SDK-Documentation/blob/main/app/src/main/java/com/tvs/android/VitalSignsProcess.kt#L49
+
+5. Implement a method `onResult(result: ProcessingResult<ConsumptionStatus>)` to handle the result of the frame consumption.
+```kotlin
+when (result.value) {
+    ConsumptionStatus.VALIDATION_ERROR -> {
+        onValidationFailure(result.error!!) // show a message to the user that the data is invalid, restart the process
+    }
+
+    ConsumptionStatus.RED_INTENSITY_NOT_ENOUGH -> {
+        onLowIntensity() // show a message to the user to move the finger to the center of the camera, restart the process
+    }
+
+    ConsumptionStatus.MEASUREMENT_FAILED -> {
+        onConsumptionFailure() // general error message, restart the process
+    }
+
+    ConsumptionStatus.IN_PROGRESS -> {
+        onProgress() // show a message to the user that the measurement is in progress, increment the progress bar, current frame number.
+    }
+
+    ConsumptionStatus.START_CALCULATING -> {
+        onStartProcessing() // all necessary data has been collected, start processing the data, open the next screen and pass the data to it
+    }
+
+    ConsumptionStatus.SKIP -> {
+        // do nothing on skip, proceed normally. 
+        // Image won't be included in the calculation (first few frames are skipped to allow the user to position the finger correctly)
+    }
+
+    else -> {}
+}
+```
+See https://github.com/RE-DOCTOR-AI/Android-SDK-Documentation/blob/main/app/src/main/java/com/tvs/android/VitalSignsProcess.kt#L104
 
 #### Get results
-On the class above you can see the status ```vitalsFrameResult == ProcessStatus.START_CALCULATING
-&& glucoseFrameResult == ProcessStatus.START_CALCULATING```. So once this status is reached system start calculating process. In our example app we check it asynchronously 
-You can see it here https://github.com/RE-DOCTOR-AI/Android-SDK-Documentation/blob/main/app/src/main/java/tvs/sdk/MainActivity.kt#L107
-```kotlin
-...            
-    else if (vitalsFrameResult == ProcessStatus.START_CALCULATING
-    && glucoseFrameResult == ProcessStatus.START_CALCULATING
-    ) {
-        //that is the new status required as Glucose calculation takes time and we need to process is
-        onStartProcessing()
-    }
-...
-
-```      
-
-you can see the function ```onStartProcessing()``` which is used to prepare some data for SDK and move user to the final screen where data got calculated and then showed.
+In the class above you can see the frame consumption status ```result.value == ConsumptionStatus.START_CALCULATING```. 
+Once this status is has been observed, move to result calculation.
+See the example https://github.com/RE-DOCTOR-AI/Android-SDK-Documentation/blob/main/app/src/main/java/com/tvs/android/VitalSignsProcess.kt#L150
 
 ```kotlin
-...
 private fun onStartProcessing() {
-    //SDK required: passing frames data to SDK consumers
-    val vitalsFrames = vitalsFrameConsumer.framesData()
-    val glucoseFrames = glucoseFrameConsumer.framesData()
+    // SDK required: passing frames data to SDK consumers
+    println("Collected frames. Start processing")
+    
+    // vitals and glucose calculation use separate lists, so we need to get them from consumer
+    val vitalsFrames = frameConsumer.getVitalsFramesData()
+    val glucoseFrames = frameConsumer.getGlucoseFrameData()
 
-    //put frames and user params to the intent so that we can use them on next screen
+    // Put frames and to the intent so that we can use them in the next activity
     val intent = Intent(this@VitalSignsProcess, CalculatingResults::class.java)
     intent.putExtra("vitalsData", vitalsFrames)
     intent.putExtra("glucoseData", glucoseFrames)
-    intent.putExtra("userParams", UserParameters(
-        height = 180.0,//cm
-        weight = 74.0,//kg
-        age = 39,//years
-        gen = 1//1:male, 2: female
-    ))
+
     startActivity(intent)
     finish()
 }
-...
-
 ```
 
-6. On file CalculatingResults you can see the code which works asynchronously
+6. In `CalculatingResults` activity kick off data processing using the passed frames data in `onCreate()` method.
+It is important to run the computations asynchronously in a coroutine to avoid blocking the UI thread.
+See for details https://github.com/RE-DOCTOR-AI/Android-SDK-Documentation/blob/main/app/src/main/java/com/tvs/android/CalculatingResults.kt#L81
 
 ```kotlin
-    ...
-        //SDK required: vitals and glucose processors
-        //-->
-        val glucoseLevelProcessor = GlucoseLevelProcessorAndroid()
-        val vitalsProcessor = VitalSignsProcessorNg(this.getUserParameters())
-        //<--
 
-        //flag to keep screen on because glucose calculation can take up to two minutes
-        window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+override fun onCreate() {
+    lifecycleScope.launch(Dispatchers.Default) {
+        processData()
+    }
+}
 
-        glucoseJob = lifecycleScope.launch {
-            startGlucoseLoadingAnimation().collect { text ->
-                glucoseLevelField.text = text
-                startVitalsLoadingAnimation(text)
+private suspend fun processData() {
+    /**
+     * Extract frames data from the intent
+     */
+    val vitalsFrameData = getVitalsFrameData()
+    val glucoseFrameData = getGlucoseFrameData()
+
+    /* Run data processing in coroutine */
+    lifecycleScope.launch(Dispatchers.Main) {
+        /**
+         * Separate job for calculating vitals
+         */
+        val vitalsJob = async(Dispatchers.Default) {
+            vitalsProcessResult = vitalsProcessor.process(vitalsFrameData)
+
+            // Computation finished successfully
+            if (vitalsProcessResult == ProcessingStatus.FINISHED) {
+                // Read vitals values from the processor
+                heartRate = vitalsProcessor.getHeartRate()
+                bloodPressure = vitalsProcessor.getBloodPressure()
+                respirationRate = vitalsProcessor.getRespirationRate()
+                bloodOxygen = vitalsProcessor.getBloodOxygen()
+                riskLevel = getRiskLevel(vitalsProcessor.riskLevel.value)
+            } else {
+                // process failed computation
             }
         }
+        vitalsJob.await() // wait for completion
+        showVitals() // show computation results
 
-
-        lifecycleScope.launch(Dispatchers.Default)  {
-            //SDK required: Here we wait till glucose is calculated and show results
-            //-->
-            val glucoseFrameData = getGlucoseFrameData()
+        /**
+         * Separate job for calculating glucose
+         */
+        val glucoseJob = async(Dispatchers.Default) {
             val glucoseResult = glucoseLevelProcessor.process(glucoseFrameData)
+
             if (glucoseResult == ProcessingStatus.FINISHED) {
-                glucoseJob?.cancel()
+                glucoseAnimationJob.cancel() // Stop the animation on completion
+                // Read glucose values from the processor
                 glucoseLevelMax = glucoseLevelProcessor.getGlucoseMaxValue()
                 glucoseLevelMin = glucoseLevelProcessor.getGlucoseMinValue()
             }
-            showGlucose()
-            withContext(Dispatchers.Main) { blockingButtons(true) }
-            //<--
         }
-
-        lifecycleScope.launch(Dispatchers.Default) {
-            //SDK required: here we wait till vitals calculated and show them
-            //-->
-            val vitalsFrameData = getVitalsFrameData()
-            val vitalsResult = vitalsProcessor.process(vitalsFrameData)
-            if (vitalsResult == ProcessingStatus.FINISHED) {
-                bloodOxygen = vitalsProcessor.o2.value
-                heartRate = vitalsProcessor.Beats.value
-                respirationRate = vitalsProcessor.Breath.value
-                systolicBloodPressure = vitalsProcessor.SP.value
-                diastolicBloodPressure = vitalsProcessor.DP.value
-            }
-            showVitals()
-            //<--
-        ...
+        glucoseJob.await() // wait for completion
+        showGlucose() // show computation results
+    }
+}
 ```
 
 #### Keep in mind
@@ -247,19 +287,17 @@ You can see it here https://github.com/RE-DOCTOR-AI/Android-SDK-Documentation/bl
 In case you have imperial measurement system in your apps you can convert that data to metric as we’re doing in our sample apps.
 ```kotlin
     intent.putExtra("userParams", UserParameters(
-        height = 180.0,//cm
-        weight = 74.0,//kg
-        age = 39,//years
-        gen = 1//1:male, 2: female
+        height = 180.0, //cm
+        weight = 74.0, //kg
+        age = 39, //years
+        gen = 1 //1:male, 2: female
     ))
 ```
 ##### Process duration
-Remember that process of measurement lasts for 45 seconds. You can see the constant ```VITALS_PROCESS_DURATION``` which is stored in the SDK and equals 45 seconds. Which means user have to hold their finder during that time.
-##### License key
-Bear in mind that license key will be rotated (it will be agreed with separately with your company). 
-There are few option to do it. Here are two just for example:
-1. Keep it inside the app but closeer to rotation date you will have to update it and also update your app for endusers in order they can still use it
-2. Keep it out side of the app so that you can just update the key and leave your app without any updates
+Remember that process of collecting and preprocessing frames lasts for about 30 seconds. 
+You can see the constant ```MEASUREMENT_COUNT``` which is stored in the SDK and equals 900 frames.
+Given the video frame rate of 30 fps it will take 30 seconds to collect all the frames.
+
 ##### Internet connection
 SDK requires periodical internet connection in order to send logs to the server. It's recommended to use it while connected to interned at least once in a few days.
 ### Troubleshooting
@@ -267,7 +305,7 @@ Debug release of SDK writes some outputs to logs so you can see if there are any
 ## Point of Contact for Support
 In case of any questions, please contact timur@re.doctor
 ## Version details
-Current version is 1.3.0 has a basic functionality to measure vitals & glucose including: 
+Current version is 1.5.0 has a basic functionality to measure vitals & glucose including: 
 
 1. Blood Oxygen
 2. Respiration Rate

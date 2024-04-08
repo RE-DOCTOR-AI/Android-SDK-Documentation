@@ -14,9 +14,14 @@ import androidx.appcompat.app.AppCompatActivity
 import com.tvs.android.camera.CameraConnectionFragment
 import com.tvs.consumer.DefaultFrameConsumerAndroid
 import com.tvs.consumer.ConsumptionStatus
+import com.tvs.model.ProcessingResult
 import com.tvs.VitalsScannerSDK
+import kotlin.math.roundToInt
 
-
+/**
+ * Activity for ingesting frames from camera and passing them to SDK
+ * It uses fragment api to include camera preview
+ */
 class VitalSignsProcess : AppCompatActivity(), ImageReader.OnImageAvailableListener {
     private lateinit var mainToast: Toast
 
@@ -24,25 +29,23 @@ class VitalSignsProcess : AppCompatActivity(), ImageReader.OnImageAvailableListe
     private var previewWidth = 0
     private var sensorOrientation = 0
 
-    //SDK required: This to vars are required to pass frames data to SDK
+    // SDK required: This to vars are required to pass frames data to SDK
     private lateinit var frameConsumer: DefaultFrameConsumerAndroid
 
-    //ProgressBar
-    private lateinit var progBar: ProgressBar
-    var progP = 0
+    // Progress bar
+    private val progressBar by lazy { findViewById<ProgressBar>(R.id.VSPB) }
     var inc = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_vital_signs_process)
-
-        // XML - Java Connecting
-        progBar = findViewById(R.id.VSPB)
-        progBar!!.progress = 0
-
+        progressBar.progress = 0
         setFragment()
     }
 
+    /**
+     * Callback for image reader. Reads the latest image and passes it to the frame consumer
+     */
     override fun onImageAvailable(reader: ImageReader) {
         // We need wait until we have some size from onPreviewSizeChosen
         if (previewWidth == 0 || previewHeight == 0) {
@@ -58,6 +61,9 @@ class VitalSignsProcess : AppCompatActivity(), ImageReader.OnImageAvailableListe
         }
     }
 
+    /**
+     * Creates camera fragment, adds it to the container and initializes frame consumer with camera preview size
+     */
     private fun setFragment() {
         val manager = getSystemService(Context.CAMERA_SERVICE) as CameraManager
         val cameraId = manager.cameraIdList[0]
@@ -80,6 +86,9 @@ class VitalSignsProcess : AppCompatActivity(), ImageReader.OnImageAvailableListe
         fragmentManager.beginTransaction().replace(R.id.container, camera2Fragment).commit()
     }
 
+    /**
+     * Returns screen orientation in degrees
+     */
     private fun getScreenOrientation(): Int {
         return when (windowManager.defaultDisplay.rotation) {
             Surface.ROTATION_270 -> 270
@@ -89,31 +98,57 @@ class VitalSignsProcess : AppCompatActivity(), ImageReader.OnImageAvailableListe
         }
     }
 
-    private fun onResult(result: ConsumptionStatus) {
-        when (result) {
+    /**
+     * Processes the result of the frame consumption
+     */
+    private fun onResult(result: ProcessingResult<ConsumptionStatus>) {
+        when (result.value) {
+            ConsumptionStatus.VALIDATION_ERROR -> {
+                onValidationFailure(result.error!!)
+            }
+
             ConsumptionStatus.RED_INTENSITY_NOT_ENOUGH -> {
                 onLowIntensity()
             }
+
             ConsumptionStatus.MEASUREMENT_FAILED -> {
                 onConsumptionFailure()
             }
+
             ConsumptionStatus.IN_PROGRESS -> {
                 onProgress()
             }
+
             ConsumptionStatus.START_CALCULATING -> {
                 onStartProcessing()
             }
-            ConsumptionStatus.NEED_MORE_IMAGES -> {
-                onMoreImages()
+
+            ConsumptionStatus.SKIP -> {
+                // do nothing on skip, proceed normally. Image won't be included in the calculation
             }
-            else -> {
-                println("Unknown status $result must be one of (${ConsumptionStatus.IN_PROGRESS}, ${ConsumptionStatus.START_CALCULATING}, ${ConsumptionStatus.NEED_MORE_IMAGES}, ${ConsumptionStatus.RED_INTENSITY_NOT_ENOUGH}, ${ConsumptionStatus.MEASUREMENT_FAILED})")
-            }
+
+            else -> {}
         }
     }
 
+    /**
+     * Handles the case when validation fails, sets the error message and restarts the consuming
+     */
+    private fun onValidationFailure(error: String) {
+        val debugStatus: TextView = findViewById(R.id.DebugStatus)
+
+        runOnUiThread {
+            debugStatus.text = "Validation failed: $error"
+        }
+
+        restartConsuming()
+    }
+
+    /**
+     * Handles the case when the consumption is finished and the processing should start
+     */
     private fun onStartProcessing() {
-        //SDK required: passing frames data to SDK consumers
+        // SDK required: passing frames data to SDK consumers
         println("Collected frames. Start processing")
         val vitalsFrames = frameConsumer.getVitalsFramesData()
         val glucoseFrames = frameConsumer.getGlucoseFrameData()
@@ -127,6 +162,9 @@ class VitalSignsProcess : AppCompatActivity(), ImageReader.OnImageAvailableListe
         finish()
     }
 
+    /**
+     * Handles the case when the consumption fails for some reason
+     */
     private fun onConsumptionFailure() {
         val debugStatus: TextView = findViewById(R.id.DebugStatus)
         runOnUiThread {
@@ -138,6 +176,9 @@ class VitalSignsProcess : AppCompatActivity(), ImageReader.OnImageAvailableListe
         mainToast.show()
     }
 
+    /**
+     * Handles the case when the intensity of the red light is too low
+     */
     private fun onLowIntensity() {
         val debugStatus: TextView = findViewById(R.id.DebugStatus)
         // Only the original thread that created a view hierarchy can touch its views
@@ -147,24 +188,25 @@ class VitalSignsProcess : AppCompatActivity(), ImageReader.OnImageAvailableListe
         restartConsuming()
     }
 
+    /**
+     * Updates the progress bar according to the progress of the measurement
+     */
     private fun onProgress() {
         val debugStatus: TextView = findViewById(R.id.DebugStatus)
         runOnUiThread {
             debugStatus.text = "Process status: measurement in progress..."
         }
-        progP = inc++ / VitalsScannerSDK.VITALS_PROCESS_DURATION
-        progBar.progress = progP
+        this.inc++
+        val progress = 100 * (this.inc.toDouble() / VitalsScannerSDK.MEASUREMENT_COUNT)
+        progressBar.progress = progress.roundToInt()
     }
 
-    private fun onMoreImages() {
-        val debugStatus: TextView = findViewById(R.id.DebugStatus)
-        debugStatus.text = "Process status: Nearly there!"
-    }
-
+    /**
+     * Resets the progress bar and frame consumer
+     */
     private fun restartConsuming() {
         inc = 0
-        progP = inc
-        progBar.progress = progP
+        progressBar.progress = 0
         frameConsumer.resetFramesData()
     }
 

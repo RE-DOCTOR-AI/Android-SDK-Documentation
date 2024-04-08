@@ -46,6 +46,10 @@
             </intent-filter>
         </activity>
         <activity
+            android:name=".PatientInfoActivity"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait" />
+        <activity
             android:name=".StartVitalSigns"
             android:configChanges="orientation"
             android:screenOrientation="portrait" />
