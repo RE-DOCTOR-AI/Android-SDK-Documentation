@@ -84,7 +84,7 @@ Here is an example on how to use it. Please remember that you need to work with 
     <uses-permission android:name="android.permission.INTERNET" />
 ```
 
-2. Add the following function and call it before you start working with camera so that you don't need to manually set up camera permissions for your app. You can see how it's done here https://github.com/RE-DOCTOR-AI/Android-SDK-Documentation/blob/main/app/src/main/java/tvs/sdk/AboutApp.kt#L22
+2. Add the following function and call it before you start working with camera so that you don't need to manually set up camera permissions for your app. You can see how it's done here https://github.com/RE-DOCTOR-AI/Android-SDK-Documentation/blob/main/app/src/main/java/com/tvs/android/AboutApp.kt#L66
 ```kotlin 
     // Function to check and request permission.
     fun checkPermission() {
@@ -144,8 +144,8 @@ class VitalSignsProcess : AppCompatActivity(), ImageReader.OnImageAvailableListe
     }
 }
 ```
-The complete code can be found here https://github.com/RE-DOCTOR-AI/Android-SDK-Documentation/blob/main/app/src/main/java/com/tvs/android/VitalSignsProcess.kt#L43
-For the details of camera preview fragment class refer to https://github.com/RE-DOCTOR-AI/Android-SDK-Documentation/blob/main/app/src/main/java/com/tvs/android/camera/CameraConnectionFragment.kt
+The complete code can be found here https://github.com/RE-DOCTOR-AI/Android-SDK-Documentation/blob/main/app/src/main/java/com/tvs/android/VitalSignsProcess.kt#L25
+For the details of camera preview fragment class refer to https://github.com/RE-DOCTOR-AI/Android-SDK-Documentation/blob/main/app/src/main/java/com/tvs/android/camera/CameraConnectionFragment.java
 
 4. The same activity should implement  ```onImageAvailable(reader: ImageReader)``` method which will allow you 
 to pass each frame of the video stream to SDK consumer.
@@ -216,7 +216,7 @@ private fun onStartProcessing() {
 
 6. In `CalculatingResults` activity kick off data processing using the passed frames data in `onCreate()` method.
 It is important to run the computations asynchronously in a coroutine to avoid blocking the UI thread.
-See for details https://github.com/RE-DOCTOR-AI/Android-SDK-Documentation/blob/main/app/src/main/java/com/tvs/android/CalculatingResults.kt#L81
+See for details https://github.com/RE-DOCTOR-AI/Android-SDK-Documentation/blob/main/app/src/main/java/com/tvs/android/CalculatingResults.kt#L78
 
 ```kotlin
 
@@ -282,16 +282,9 @@ Library needs some patient data in a metric system so use kilograms(kg) and cent
 3. Age (years)
 4. Gender (1 - Male, 2 - Female). We are sorry to ask you to chose only between those two numbers but calculations are depend on them.
 
-You can see it here https://github.com/RE-DOCTOR-AI/Android-SDK-Documentation/blob/main/app/src/main/java/tvs/sdk/MainActivity.kt#L35
+You can see it here https://github.com/RE-DOCTOR-AI/Android-SDK-Documentation/blob/main/app/src/main/java/com/tvs/android/AndroidProvider.kt#L26
 In case you have imperial measurement system in your apps you can convert that data to metric as we’re doing in our sample apps.
-```kotlin
-    intent.putExtra("userParams", UserParameters(
-        height = 180.0, //cm
-        weight = 74.0, //kg
-        age = 39, //years
-        gen = 1 //1:male, 2: female
-    ))
-```
+
 ##### Process duration
 Remember that process of collecting and preprocessing frames lasts for about 30 seconds. 
 You can see the constant ```MEASUREMENT_COUNT``` which is stored in the SDK and equals 900 frames.
@@ -304,7 +297,7 @@ Debug release of SDK writes some outputs to logs so you can see if there are any
 ## Point of Contact for Support
 In case of any questions, please contact timur@re.doctor
 ## Version details
-Current version is 1.5.0 has a basic functionality to measure vitals & glucose including: 
+Current version is 1.5.0 has a basic functionality to measure vitals & glucose including and: 
 
 1. Blood Oxygen
 2. Respiration Rate
