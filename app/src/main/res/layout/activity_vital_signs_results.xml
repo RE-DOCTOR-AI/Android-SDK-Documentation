@@ -341,16 +341,6 @@
                     android:textColor="@color/colorPrimaryDark" />
             </RelativeLayout>
 
-            <TextView
-                android:id="@+id/RiskLevel"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:layout_marginLeft="7dp"
-                android:background="@android:color/transparent"
-                android:text="Risk level: LOW"
-                android:textColor="@color/colorPrimaryDark" />
-
             <EditText
                 android:id="@+id/comment"
                 style="@style/input_field"

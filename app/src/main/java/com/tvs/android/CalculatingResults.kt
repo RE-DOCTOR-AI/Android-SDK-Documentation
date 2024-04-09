@@ -18,9 +18,7 @@ import android.widget.EditText
 import com.tvs.VitalsScannerSDK
 
 import com.tvs.model.FramesDataAndroid
-import com.tvs.model.RiskLevel
 import com.tvs.model.VitalsDto
-import com.tvs.model.getRiskLevel
 import com.tvs.processor.ProcessingStatus
 import com.tvs.processor.GlucoseLevelProcessorAndroid
 import com.tvs.processor.VitalSignsProcessorNg
@@ -35,7 +33,6 @@ class CalculatingResults : AppCompatActivity() {
     private var glucoseLevelMax = 0
     private var glucoseLevelMin = 0
     private lateinit var vitalsResult: VitalsResult
-    private var riskLevel: RiskLevel = RiskLevel.UNKNOWN
 
     // Linking fields and variables
     private val bloodOxygenField by lazy { findViewById<TextView>(R.id.O2V) }
@@ -48,7 +45,6 @@ class CalculatingResults : AppCompatActivity() {
     private val reflectionIndexField by lazy { findViewById<TextView>(R.id.reflectionIndex) }
     private val lasiField by lazy { findViewById<TextView>(R.id.lasi) }
     private val hrvField by lazy { findViewById<TextView>(R.id.hrv) }
-    private val riskLevelField by lazy { findViewById<TextView>(R.id.RiskLevel) }
 
     // Manual readings
     private val bloodOxygenManualField by lazy { findViewById<EditText>(R.id.inputRealO2) }
@@ -156,18 +152,14 @@ class CalculatingResults : AppCompatActivity() {
                 val glucoseResult = glucoseLevelProcessor.process(glucoseFrameData)
 
                 if (glucoseResult == ProcessingStatus.FINISHED) {
-                    glucoseAnimationJob.cancel() // Stop the animation on completion
                     // Read glucose values from the processor
                     glucoseLevelMax = glucoseLevelProcessor.getGlucoseMaxValue()
                     glucoseLevelMin = glucoseLevelProcessor.getGlucoseMinValue()
-                    val glucoseMeanValue = (glucoseLevelMax - glucoseLevelMin).toDouble() / 2
 
-                    // Calculate risk level based on glucose mean value
-                    riskLevel =
-                        getRiskLevel((vitalsProcessor.riskLevel.value)?.copy(glucose = glucoseMeanValue))
                 }
             }
             glucoseJob.await() // wait for completion
+            glucoseAnimationJob.cancel() // Stop the animation on completion
             showGlucose() // show computation results
 
             // Enabled buttons once the processing is done
@@ -283,9 +275,6 @@ class CalculatingResults : AppCompatActivity() {
         withContext(Dispatchers.Main) {
             glucoseLevelField.text = "[%d - %d]".format(glucoseLevelMin, glucoseLevelMax)
             glucoseLevelField.setTextColor(resources.getColor(R.color.black, theme))
-
-            riskLevelField.text = "Risk level: $riskLevel"
-            riskLevelField.setTextColor(resources.getColor(R.color.black, theme))
         }
     }
 

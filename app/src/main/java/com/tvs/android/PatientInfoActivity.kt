@@ -97,9 +97,13 @@ class PatientInfoActivity : AppCompatActivity() {
 
     private val personData: Unit
         get() {
-            val json = sharedPreferences!!.getString(USER_INFO_KEY, null)
-            val userInfo: UserInfo = gson.fromJson(json, UserInfo::class.java)
-            if (userInfo != null) drawUI(userInfo)
+            try {
+                val json = sharedPreferences!!.getString(USER_INFO_KEY, null)
+                val userInfo: UserInfo = gson.fromJson(json, UserInfo::class.java)
+                if (userInfo != null) drawUI(userInfo)
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
         }
 
     private fun drawUI(userInfo: UserInfo) {
