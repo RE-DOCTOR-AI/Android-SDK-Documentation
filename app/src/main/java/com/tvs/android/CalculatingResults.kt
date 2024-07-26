@@ -148,8 +148,6 @@ class CalculatingResults : AppCompatActivity() {
              * Separate job for calculating glucose
              */
             val glucoseJob = async(Dispatchers.Default) {
-                println("frequency: ${glucoseFrameData.samplingFreq}")
-                println("red ${glucoseFrameData.red}")
                 val glucoseResult = glucoseLevelProcessor.process(glucoseFrameData)
                 println("Finished glucose processing with status: $glucoseResult")
 
