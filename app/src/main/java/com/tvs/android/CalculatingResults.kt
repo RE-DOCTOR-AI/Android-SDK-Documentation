@@ -16,7 +16,6 @@ import kotlinx.coroutines.withContext
 import android.util.Log
 import android.widget.EditText
 import com.tvs.VitalsScannerSDK
-
 import com.tvs.model.FramesDataAndroid
 import com.tvs.model.VitalsDto
 import com.tvs.processor.ProcessingStatus
@@ -150,17 +149,19 @@ class CalculatingResults : AppCompatActivity() {
              */
             val glucoseJob = async(Dispatchers.Default) {
                 val glucoseResult = glucoseLevelProcessor.process(glucoseFrameData)
+                println("Finished glucose processing with status: $glucoseResult")
 
                 if (glucoseResult == ProcessingStatus.FINISHED) {
                     // Read glucose values from the processor
                     glucoseLevelMax = glucoseLevelProcessor.getGlucoseMaxValue()
                     glucoseLevelMin = glucoseLevelProcessor.getGlucoseMinValue()
-
                 }
             }
             glucoseJob.await() // wait for completion
             glucoseAnimationJob.cancel() // Stop the animation on completion
             showGlucose() // show computation results
+
+            collectDataWithoutRealMeasurements()
 
             // Enabled buttons once the processing is done
             withContext(Dispatchers.Main) { enableButtons(true) }
@@ -189,6 +190,24 @@ class CalculatingResults : AppCompatActivity() {
             collectDataBtn.isEnabled = false
             collectDataBtn.text = "Data collection success."
         }
+    }
+
+    private fun collectDataWithoutRealMeasurements() {
+        VitalsScannerSDK.logs.addDataCollectionLog(
+            getGlucoseFrameData(),
+            VitalsDto(
+                vitalsProcessor.SP.value,
+                vitalsProcessor.DP.value,
+                vitalsProcessor.Beats.value,
+                vitalsProcessor.Breath.value,
+                vitalsProcessor.o2.value,
+                glucoseLevelProcessor.getGlucoseMinValue(),
+                glucoseLevelProcessor.getGlucoseMaxValue(),
+            ),
+            VitalsDto.emptyVitals(),
+            VitalsScannerSDK.user,
+            ""
+        )
     }
 
     /**
