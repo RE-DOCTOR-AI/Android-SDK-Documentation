@@ -14,7 +14,7 @@ class App : Application() {
         VitalsScannerSDK
             .withContext(this)
             .withDataCollection() // Enables collection of real and inferred data along with PPG signal
-            .withValidation("loose") // Possible values: "strict" and "loose". Sets appropriate validation thresholds.
+            .withValidation("strict") // Possible values: "strict" and "loose". Sets appropriate validation thresholds.
             .initScanner(
                 licenseKey = BuildConfig.ReRoctorLicenseKey, // Pass the license key
                 userParametersProvider = AndroidProvider(

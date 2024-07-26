@@ -8,16 +8,17 @@ plugins {
 
 android {
     compileSdk = 33
+    namespace = "com.tvs.android"
 
     defaultConfig {
         applicationId = "com.tvs.android"
-        minSdk = 24
+        minSdk = 26 // Required by kinference dependency
         targetSdk = 33
         versionCode = 21
         versionName = "1.5.0(21)"
 
         // Required when setting minSdkVersion to 20 or lower
-        multiDexEnabled = true
+//        multiDexEnabled = true
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
         val localProperties = Properties()
@@ -46,6 +47,9 @@ android {
         targetCompatibility = JavaVersion.VERSION_11
         isCoreLibraryDesugaringEnabled = true
     }
+    kotlinOptions {
+        jvmTarget = "11"
+    }
 }
 
 
@@ -55,7 +59,6 @@ dependencies {
     implementation("org.jetbrains.kotlinx:atomicfu:0.18.3")
     implementation("org.jetbrains.kotlinx:multik-core:0.2.1")
     implementation("org.jetbrains.kotlinx:multik-kotlin:0.2.1")
-    implementation("de.voize:pytorch-lite-multiplatform:0.5.0")
     implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.4.0")
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.0")
@@ -70,6 +73,12 @@ dependencies {
     implementation("io.ktor:ktor-client-cio:2.1.2")
     implementation("io.ktor:ktor-client-content-negotiation:2.1.2")
     implementation("io.ktor:ktor-serialization-kotlinx-json:2.1.2")
+
+    //kinference
+    implementation("io.kinference:inference-api:0.2.20-kotlin18")
+    implementation("io.kinference:ndarray-api:0.2.20-kotlin18")
+    implementation("io.kinference:inference-ort:0.2.20-kotlin18")
+    implementation("io.kinference:inference-core:0.2.20-kotlin18")
 
     //SDK dependencies
     implementation("org.bitbucket.b_c:jose4j:0.7.8")
