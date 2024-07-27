@@ -89,7 +89,7 @@ See https://github.com/RE-DOCTOR-AI/Android-SDK-Documentation/blob/feat/CSN-349/
 
 Implement `UserParametersProvider` interface to provide user parameters to the SDK. 
 This demo app uses local storage to store and load user parameters.
-See https://github.com/RE-DOCTOR-AI/Android-SDK-Documentation/blob/main/app/src/main/java/com/tvs/android/AndroidProvider.kt for details
+See https://github.com/RE-DOCTOR-AI/Android-SDK-Documentation/blob/feat/CSN-349/app/src/main/java/com/tvs/android/AndroidProvider.kt for details
 
 
 #### Prepare data and call SDK functions
@@ -109,7 +109,7 @@ Here is an example on how to use it. Please remember that you need to work with 
     <uses-permission android:name="android.permission.INTERNET" />
 ```
 
-2. Add the following function and call it before you start working with camera so that you don't need to manually set up camera permissions for your app. You can see how it's done here https://github.com/RE-DOCTOR-AI/Android-SDK-Documentation/blob/main/app/src/main/java/com/tvs/android/AboutApp.kt#L66
+2. Add the following function and call it before you start working with camera so that you don't need to manually set up camera permissions for your app. You can see how it's done here https://github.com/RE-DOCTOR-AI/Android-SDK-Documentation/blob/feat/CSN-349/app/src/main/java/com/tvs/android/AboutApp.kt#L66
 ```kotlin 
     // Function to check and request permission.
     fun checkPermission() {
@@ -169,8 +169,8 @@ class VitalSignsProcess : AppCompatActivity(), ImageReader.OnImageAvailableListe
     }
 }
 ```
-The complete code can be found here https://github.com/RE-DOCTOR-AI/Android-SDK-Documentation/blob/main/app/src/main/java/com/tvs/android/VitalSignsProcess.kt#L25
-For the details of camera preview fragment class refer to https://github.com/RE-DOCTOR-AI/Android-SDK-Documentation/blob/main/app/src/main/java/com/tvs/android/camera/CameraConnectionFragment.java
+The complete code can be found here https://github.com/RE-DOCTOR-AI/Android-SDK-Documentation/blob/feat/CSN-349/app/src/main/java/com/tvs/android/VitalSignsProcess.kt#L25
+For the details of camera preview fragment class refer to https://github.com/RE-DOCTOR-AI/Android-SDK-Documentation/blob/feat/CSN-349/app/src/main/java/com/tvs/android/camera/CameraConnectionFragment.java
 
 4. The same activity should implement  ```onImageAvailable(reader: ImageReader)``` method which will allow you 
 to pass each frame of the video stream to SDK consumer.
@@ -180,7 +180,7 @@ override fun onImageAvailable(reader: ImageReader) {
     this.onResult(frameConsumer.offer(image, frameNumber))
 }
 ```
-See https://github.com/RE-DOCTOR-AI/Android-SDK-Documentation/blob/main/app/src/main/java/com/tvs/android/VitalSignsProcess.kt#L49
+See https://github.com/RE-DOCTOR-AI/Android-SDK-Documentation/blob/feat/CSN-349/app/src/main/java/com/tvs/android/VitalSignsProcess.kt#L49
 
 5. Implement a method `onResult(result: ProcessingResult<ConsumptionStatus>)` to handle the result of the frame consumption.
 ```kotlin
@@ -213,12 +213,12 @@ when (result.value) {
     else -> {}
 }
 ```
-See https://github.com/RE-DOCTOR-AI/Android-SDK-Documentation/blob/main/app/src/main/java/com/tvs/android/VitalSignsProcess.kt#L104
+See https://github.com/RE-DOCTOR-AI/Android-SDK-Documentation/blob/feat/CSN-349/app/src/main/java/com/tvs/android/VitalSignsProcess.kt#L104
 
 #### Get results
 In the class above you can see the frame consumption status ```result.value == ConsumptionStatus.START_CALCULATING```. 
 Once this status is has been observed, move to result calculation.
-See the example https://github.com/RE-DOCTOR-AI/Android-SDK-Documentation/blob/main/app/src/main/java/com/tvs/android/VitalSignsProcess.kt#L150
+See the example https://github.com/RE-DOCTOR-AI/Android-SDK-Documentation/blob/feat/CSN-349/app/src/main/java/com/tvs/android/VitalSignsProcess.kt#L150
 
 ```kotlin
 private fun onStartProcessing() {
@@ -241,7 +241,7 @@ private fun onStartProcessing() {
 
 6. In `CalculatingResults` activity kick off data processing using the passed frames data in `onCreate()` method.
 It is important to run the computations asynchronously in a coroutine to avoid blocking the UI thread.
-See for details https://github.com/RE-DOCTOR-AI/Android-SDK-Documentation/blob/main/app/src/main/java/com/tvs/android/CalculatingResults.kt#L78
+See for details https://github.com/RE-DOCTOR-AI/Android-SDK-Documentation/blob/feat/CSN-349/app/src/main/java/com/tvs/android/CalculatingResults.kt#L78
 
 ```kotlin
 
@@ -326,7 +326,7 @@ Library needs some patient data in a metric system so use kilograms(kg) and cent
 3. Age (years)
 4. Gender (1 - Male, 2 - Female). We are sorry to ask you to chose only between those two numbers but calculations are depend on them.
 
-You can see it here https://github.com/RE-DOCTOR-AI/Android-SDK-Documentation/blob/main/app/src/main/java/com/tvs/android/AndroidProvider.kt#L26
+You can see it here https://github.com/RE-DOCTOR-AI/Android-SDK-Documentation/blob/feat/CSN-349/app/src/main/java/com/tvs/android/AndroidProvider.kt#L26
 In case you have imperial measurement system in your apps you can convert that data to metric as we’re doing in our sample apps.
 
 ##### Process duration
@@ -335,13 +335,13 @@ You can see the constant ```MEASUREMENT_COUNT``` which is stored in the SDK and 
 Given the video frame rate of 30 fps it will take 30 seconds to collect all the frames.
 
 ##### Internet connection
-SDK requires periodical internet connection in order to send logs to the server. It's recommended to use it while connected to interned at least once in a few days.
+SDK requires internet connection in order to send logs to the server.
 ### Troubleshooting
-Debug release of SDK writes some outputs to logs so you can see if there are any issues.
+SDK writes some outputs to logs so you can see if there are any issues.
 ## Point of Contact for Support
-In case of any questions, please contact timur@re.doctor
+In case of any questions, please contact info@re.doctor
 ## Version details
-Current version is 1.5.0 has a basic functionality to measure vitals & glucose including and: 
+Current version is 1.6.0 has functionality to measure vitals & glucose including: 
 
 1. Blood Oxygen
 2. Respiration Rate
