@@ -15,7 +15,7 @@ android {
         minSdk = 26 // Required by kinference dependency
         targetSdk = 33
         versionCode = 21
-        versionName = "1.5.0(21)"
+        versionName = "1.6.0(23)"
 
         // Required when setting minSdkVersion to 20 or lower
 //        multiDexEnabled = true
