@@ -85,7 +85,7 @@ VitalsScannerSDK
         userParametersProvider = AndroidProvider() // Object that provides user parameters, such as height, weight, age
     )
 ```
-See https://github.com/RE-DOCTOR-AI/Android-SDK-Documentation/blob/CSN-349/app/src/main/java/com/tvs/android/App.kt for details
+See https://github.com/RE-DOCTOR-AI/Android-SDK-Documentation/blob/feat/CSN-349/app/src/main/java/com/tvs/android/App.kt for details
 
 Implement `UserParametersProvider` interface to provide user parameters to the SDK. 
 This demo app uses local storage to store and load user parameters.
