@@ -57,65 +57,6 @@ dependencies {
     implementation("org.bitbucket.b_c:jose4j:0.7.8") // transient dependency that is not packaged in aar package
 }  
 ```
-So full list of dependencies can be seen here:
-```gradle 
-dependencies {
-    //can be skipped
-    //implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.0")
-
-    //can be skipped
-    //coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:1.1.5")
-
-    //can be skipped
-    //implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.0")
-
-    //can be skipped
-    //implementation("io.ktor:ktor-client-core:2.1.2")
-
-    //required by the App
-    implementation("androidx.appcompat:appcompat:1.4.2")
-
-    //required the the App
-    implementation("androidx.constraintlayout:constraintlayout:2.1.4")
-
-    //required by the app
-    implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.4.0")
-
-    //required by the app
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.1")
-
-    //required by SDK libraries are below -->
-
-    //required by SDK
-    implementation("org.jetbrains.kotlinx:atomicfu:0.18.3")
-
-    //required by SDK
-    implementation("org.jetbrains.kotlinx:multik-kotlin:0.2.1")
-
-    //required by SDK
-    implementation("de.voize:pytorch-lite-multiplatform:0.5.0")
-
-    //required by SDK
-    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
-
-    //required by SDK
-    implementation("io.ktor:ktor-client-cio:2.1.2")
-
-    //required by SDK
-    implementation("io.ktor:ktor-client-content-negotiation:2.1.2")
-
-    //required by SDK
-    implementation("io.ktor:ktor-serialization-kotlinx-json:2.1.2")
-
-    //required by SDK
-    implementation("org.bitbucket.b_c:jose4j:0.7.8")
-
-    //required by SDK
-    implementation(fileTree("libs"))
-
-    
-}  
-```
 
 #### License key
 Request a license key from the RE.DOCTOR team.
@@ -144,7 +85,7 @@ VitalsScannerSDK
         userParametersProvider = AndroidProvider() // Object that provides user parameters, such as height, weight, age
     )
 ```
-See https://github.com/RE-DOCTOR-AI/Android-SDK-Documentation/blob/main/app/src/main/java/com/tvs/android/App.kt for details
+See https://github.com/RE-DOCTOR-AI/Android-SDK-Documentation/blob/CSN-349/app/src/main/java/com/tvs/android/App.kt for details
 
 Implement `UserParametersProvider` interface to provide user parameters to the SDK. 
 This demo app uses local storage to store and load user parameters.
