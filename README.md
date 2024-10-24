@@ -398,7 +398,7 @@ SDK requires periodical internet connection in order to send logs to the server.
 ### Troubleshooting
 Debug release of SDK writes some outputs to logs so you can see if there are any issues.
 ## Point of Contact for Support
-In case of any questions, please contact timur@re.doctor
+In case of any questions, please contact info@re.doctor
 ## Version details
 Current version is 1.5.0 has a basic functionality to measure vitals & glucose including and: 
 
